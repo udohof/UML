@@ -1,0 +1,112 @@
+Swagger Petstore
+
+ 1.0.7 
+
+OAS 2.0
+
+[ Base URL: petstore.swagger.io/v2 ]
+
+This is a sample server Petstore server. You can find out more about Swagger at http://swagger.io or on irc.freenode.net, #swagger. For this sample, you can use the api key special-key to test the authorization filters.
+Terms of service
+Contact the developer
+Apache 2.0
+Find out more about Swagger
+Schemes
+pet
+
+Everything about your Pets
+Find out more
+POST
+/pet/{petId}/uploadImage
+uploads an image
+uploadFile
+POST
+/pet
+Add a new pet to the store
+addPet
+PUT
+/pet
+Update an existing pet
+updatePet
+GET
+/pet/findByStatus
+Finds Pets by status
+findPetsByStatus
+GET
+/pet/findByTags
+Finds Pets by tags
+findPetsByTags
+GET
+/pet/{petId}
+Find pet by ID
+getPetById
+POST
+/pet/{petId}
+Updates a pet in the store with form data
+updatePetWithForm
+DELETE
+/pet/{petId}
+Deletes a pet
+deletePet
+store
+
+Access to Petstore orders
+GET
+/store/inventory
+Returns pet inventories by status
+getInventory
+POST
+/store/order
+Place an order for a pet
+placeOrder
+GET
+/store/order/{orderId}
+Find purchase order by ID
+getOrderById
+DELETE
+/store/order/{orderId}
+Delete purchase order by ID
+deleteOrder
+user
+
+Operations about user
+Find out more about our store
+POST
+/user/createWithList
+Creates list of users with given input array
+createUsersWithListInput
+GET
+/user/{username}
+Get user by user name
+getUserByName
+PUT
+/user/{username}
+Updated user
+updateUser
+DELETE
+/user/{username}
+Delete user
+deleteUser
+GET
+/user/login
+Logs user into the system
+loginUser
+GET
+/user/logout
+Logs out current logged in user session
+logoutUser
+POST
+/user/createWithArray
+Creates list of users with given input array
+createUsersWithArrayInput
+POST
+/user
+Create user
+createUser
+Models
+ApiResponse
+Category
+Pet
+Tag
+Order
+User
