@@ -1,0 +1,27 @@
+= Dokumentationstitel
+:toc:
+
+== Einleitung
+
+Dies ist ein Beispiel einer AsciiDoc-Datei mit einem eingebetteten PlantUML-Diagramm.
+
+== Abschnitt 1
+
+* Ein Listenelement
+* Noch ein Listenelement
+
+== Beispielcode-Abschnitt
+
+[ruby]
+----
+puts 'Hello, World!'
+----
+
+== PlantUML-Diagramm
+
+[plantuml, myDiagram, png]
+----
+@startuml
+Alice -> Bob: Hello
+@enduml
+----
