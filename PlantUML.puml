@@ -1,0 +1,88 @@
+@startuml
+title Loading and storing syspar parameters in application
+
+/'Actors '/
+box "MSP430i Station"
+participant main as mainMSP
+participant syspar as sysparMSP
+participant flash as flashMSP
+participant blInterface as blInterfaceMSP
+participant event as eventMSP
+participant eeprom as eepromMSP
+endbox
+
+box "Data storage"
+database oEeprom as eepromRAM
+database oSyspar as sysparRAM
+database "flash memory" as flashROM 
+endbox
+
+/' sequence '/
+note across: Station is powered on
+note across #LightBlue    
+    Loading syspars from flash to RAM
+end note
+
+mainMSP -> sysparMSP: SysPar_init()
+sysparMSP -> flashMSP: Flash_readCalPar()
+flashMSP -> flashMSP: Flash_readPar()
+note right
+    returns 'false' if no valid Syspar entry found
+    otherwise fills the syspar struct with data
+end note 
+
+alt no valid Syspar entry
+    sysparMSP -> sysparMSP: SysPar_setDefault()
+    flashROM -> sysparRAM: load default \nparameters from flash
+else 
+    flashROM -> sysparRAM: load recent \n parameters from flash
+end alt
+
+note over sysparRAM
+    oSysPar.cFlag = EEPROM_VAL_DATAOK; //0x00
+    oSysPar.cProg = EEPROM_VAL_PROGOK; //0x55
+end note
+
+sysparMSP -> sysparMSP: SysPar_writeFlash()
+alt oSysPar.cProg == 0
+    loop until watchdog strikes
+        note over sysparMSP #FFAAAA 
+            do nothing until the watchdog 
+            resets the station. MSP will then remain
+            in bootlaoder
+        end note
+    end loop
+end alt
+
+mainMSP -> eepromMSP: Eeprom_init()
+sysparRAM -> eepromRAM: oEeprom.cProg = SysPar_getEepromProg()
+sysparRAM -> eepromRAM: oEeprom.cFlag = SysPar_getEepromFlag()
+
+...
+
+note across #LightBlue  
+    storing parameters back to flash 
+end note
+
+blInterfaceMSP -> eepromMSP: Eeprom_writeFlash()
+eepromMSP -> sysparMSP: SysPar_setEepromProg()
+eepromRAM -> sysparRAM: oSysPar.cProg = oEeprom.cProg
+eepromMSP -> sysparMSP: SysPar_setEepromFlag()
+eepromRAM -> sysparRAM: oSysPar.cFlag = oEeprom.cFlag
+eepromMSP -> sysparMSP: SysPar_writeFlash()
+sysparMSP -> flashMSP: Flash_writeSyncSysPar()
+alt syspar has changed
+    sysparRAM -> flashROM: store new parameters in flash
+end alt
+
+alt oSysPar.cProg == 0
+    loop until watchdog strikes
+        note over sysparMSP #FFAAAA 
+            do nothing until the watchdog 
+            resets the station. MSP will then remain
+            in bootlaoder
+        end note
+    end loop
+end alt
+
+@enduml
