@@ -528,35 +528,8 @@
 
     <State name='CanceledWorkflow'>
       <Action name='Logout' nextState='Undefined'/>
-      <Action name='RedoLastStep' nextState='Delegate'/>
       <Action name='RedoRework' nextState='Reference'> </Action>
       <Action name='CancelRework' nextState='SelectProfile'> </Action>
-    </State>
-
-    <State name='Delegate'>
-      <Action name='NextStep' nextState='AdjustCrosshair'>
-        <Condition name='IsLastStepDesolder' />
-      </Action>
-      <Action name='NextStep' nextState='PrepareProvideComponent'>
-        <Condition name='IsLastStepPlacement' />
-      </Action>
-      <Action name='NextStep' nextState='ChangePipetteBeforePipetteDip'>
-        <Condition name='IsPlacementSelected' />
-        <Condition name='IsPinTransferSelected' />
-      </Action>
-      <Action name='NextStep' nextState='PrepareProvideComponent'>
-        <Condition name='IsLastStepPlacement' />
-      </Action>
-      <Action name='NextStep' nextState='Inspection'>
-        <Condition name='IsLastStepInspection' />
-      </Action>
-      <Action name='NextStep' nextState='AdjustCrosshairForSolder'>
-        <Condition name='IsLastStepSolder' />
-      </Action>
-      <Action name='NextStep' nextState='InspectionAfterSolder'>
-        <Condition name='IsLastStepInspectionAfterSolder' />
-      </Action>
-      <Action name='NextStep' nextState='SelectProfile'> </Action>
     </State>
 
   </StateMachine>
