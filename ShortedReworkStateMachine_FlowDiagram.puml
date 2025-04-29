@@ -1,0 +1,74 @@
+@startuml
+[*] --> Undefined
+
+Undefined --> SelectProfile : NextStep
+
+VerifyPcb --> Reference : NextStep\n[IsVerifyPcbFinished]
+VerifyPcb --> VerifyPcb : StartMesProzess
+VerifyPcb --> CanceledWorkflow : CancelRework
+
+SelectProfile --> AdjustPcb : NextStep\n[IsAlreadyReferenced\nProfileSelected\nExtendedHeatersActive]
+SelectProfile --> PrepareScavenging : NextStep\n[IsAlreadyReferenced\nScavengerIsActive\nScavengingSelected]
+SelectProfile --> AdjustCrosshair : NextStep\n[IsAlreadyReferenced\nIsDesolderSelected\nProfileSelected\nPcbFrameInLockPosition]
+SelectProfile --> PreparePickUpFromTray : NextStep\n[IsAlreadyReferenced\nIsBigComponentSelected\nIsPlacementSelected\nPcbFrameInLockPosition\nProfileSelected]
+SelectProfile --> ChangePipetteBeforePipetteDip : NextStep\n[IsAlreadyReferenced\nIsPlacementSelected\nIsPinTransferSelected\nProfileSelected\nPcbFrameInLockPosition]
+SelectProfile --> ProvideComponent : NextStep\n[IsAlreadyReferenced\nIsCyclicWorkflowMode\nPcbFrameInLockPosition]
+SelectProfile --> PrepareProvideComponent : NextStep\n[IsAlreadyReferenced\nIsPlacementSelected\nProfileSelected\nPcbFrameInLockPosition]
+SelectProfile --> Inspection : NextStep\n[IsAlreadyReferenced\nIsInspectionSelected\nProfileSelected\nPcbFrameInLockPosition]
+SelectProfile --> AdjustPcbForSolder : NextStep\n[IsAlreadyReferenced\nIsSolderSelected\nProfileSelected\nExtendedHeatersActive]
+SelectProfile --> AdjustCrosshairForSolder : NextStep\n[IsAlreadyReferenced\nIsSolderSelected\nProfileSelected\nPcbFrameInLockPosition]
+SelectProfile --> InspectionAfterSolder : NextStep\n[IsAlreadyReferenced\nIsInspectionAfterSolderSelected\nProfileSelected\nPcbFrameInLockPosition]
+SelectProfile --> Reference : NextStep\n[ProfileSelected]
+SelectProfile --> InsertScavengingPipette : NextStep\n[ScavengingSelected\nProfileSelected\nIsAlreadyReferenced]
+
+Reference --> ProvideComponent : NextStep\n[IsReferenceFinished\nIsCyclicWorkflowMode\nPcbFrameInLockPosition]
+Reference --> AdjustPcb : NextStep\n[IsReferenceFinished\nExtendedHeatersActive]
+Reference --> PrepareScavenging : NextStep\n[IsReferenceFinished\nScavengerIsActive\nScavengingSelected]
+Reference --> AdjustCrosshair : NextStep\n[IsReferenceFinished\nIsDesolderSelected\nPcbFrameInLockPosition]
+Reference --> PreparePickUpFromTray : NextStep\n[IsReferenceFinished\nIsBigComponentSelected\nIsPlacementSelected\nPcbFrameInLockPosition]
+Reference --> ChangePipetteBeforePipetteDip : NextStep\n[IsReferenceFinished\nIsPlacementSelected\nIsPinTransferSelected\nPcbFrameInLockPosition]
+Reference --> PrepareProvideComponent : NextStep\n[IsReferenceFinished\nIsPlacementSelected\nPcbFrameInLockPosition]
+Reference --> Inspection : NextStep\n[IsReferenceFinished\nIsInspectionSelected\nPcbFrameInLockPosition]
+Reference --> AdjustPcbForSolder : NextStep\n[IsReferenceFinished\nIsSolderSelected\nExtendedHeatersActive]
+Reference --> AdjustCrosshairForSolder : NextStep\n[IsReferenceFinished\nIsSolderSelected\nPcbFrameInLockPosition]
+Reference --> InspectionAfterSolder : NextStep\n[IsReferenceFinished\nIsInspectionAfterSolderSelected\nPcbFrameInLockPosition]
+Reference --> VerifyPcb : NextStep
+Reference --> CanceledWorkflow : CancelRework
+Reference --> InsertScavengingPipette : NextStep\n[IsReferenceFinished\nScavengingSelected]
+
+AdjustPcb --> PrepareScavenging : NextStep\n[ScavengerIsActive\nScavengingSelected]
+AdjustPcb --> AdjustCrosshair : NextStep\n[IsDesolderSelected]
+AdjustPcb --> PreparePickUpFromTray : NextStep\n[IsBigComponentSelected\nIsPlacementSelected]
+AdjustPcb --> ChangePipetteBeforePipetteDip : NextStep\n[IsPlacementSelected\nIsPinTransferSelected]
+AdjustPcb --> PrepareProvideComponent : NextStep\n[IsPlacementSelected]
+AdjustPcb --> Inspection : NextStep\n[IsInspectionSelected]
+AdjustPcb --> AdjustCrosshairForSolder : NextStep\n[IsSolderSelected]
+AdjustPcb --> InspectionAfterSolder : NextStep\n[IsInspectionAfterSolderSelected]
+AdjustPcb --> FinishRework : NextStep
+AdjustPcb --> CanceledWorkflow : CancelRework
+AdjustPcb --> VerifyPcb : StartMesProzess
+
+ProvideComponent --> PinDetection : NextStep\n[IsProvideComponentFinished\nIsDipComponentSelected]
+ProvideComponent --> PinDetection : NextStep\n[IsProvideComponentFinished]
+ProvideComponent --> CanceledWorkflow : CancelRework
+
+DipComponent --> PinDetection : NextStep\n[IsDipComponentFinished]
+DipComponent --> CanceledWorkflow : CancelRework
+
+PreparePickUpFromTray --> PickUpFromTray : NextStep\n[IsPreparePickUpFromTrayFinished]
+PreparePickUpFromTray --> CanceledWorkflow : CancelRework
+
+PickUpFromTray --> PrepareProvideComponent : NextStep\n[IsPickUpFromTrayFinished\nIsPlacementSelected\nIsBigComponentSelected]
+PickUpFromTray --> PreparePickUpFromTray : NextStep\n[IsPickUpFromTrayFinished\nIsBigComponentSelected]
+PickUpFromTray --> CanceledWorkflow : CancelRework
+
+FinishRework --> Reference : NextStep
+FinishRework --> Reference : RedoRework
+FinishRework --> SelectProfile : CancelRework
+
+CanceledWorkflow --> Undefined : Logout
+CanceledWorkflow --> Delegate : RedoLastStep
+CanceledWorkflow --> Reference : RedoRework
+CanceledWorkflow --> SelectProfile : CancelRework
+
+@enduml

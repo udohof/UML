@@ -1,0 +1,62 @@
+@startuml
+scale 600 width
+skinparam padding 10
+skinparam nodesep 60
+
+[*] -> Undefined
+Undefined --> SelectProfile : NextStep
+SelectProfile --> Reference : NextStep(\n -ProfileSelected)
+SelectProfile --> Undefined : Logout
+SelectProfile --> AdjustPcb : NextStep(\n -isAlreadyReferenced\n -ProfileSelected\n -ExtendedHeatersActive)
+SelectProfile --> PrepareScavenging : NextStep(\n -isAlreadyReferenced\n -ScavengerIsActive\n -ScavengingSelected)
+SelectProfile --> AdjustCrosshair : NextStep(\n -isAlreadyReferenced\n -IsDesolderSelected\n -ProfileSelected\n -PcbFrameInLockPosition)
+SelectProfile --> PreparePickUpFromTray : NextStep(\n -isAlreadyReferenced\n -IsBigComponentSelected\n -IsPlacementSelected)
+SelectProfile --> PrepareDipComponent : NextStep(\n -isAlreadyReferenced\n -IsPlacementSelected\n -IsDipComponentSelected\n -ProfileSelected\n -PcbFrameInLockPosition)
+SelectProfile --> PrepareProvidePrintedComponent : NextStep(\n -isAlreadyReferenced\n -IsPlacementSelected\n -IsProvidePrintedComponentSelected\n -ProfileSelected\n -PcbFrameInLockPosition)
+SelectProfile --> ChangePipetteBeforePipetteDip : NextStep(\n -isAlreadyReferenced\n -IsPlacementSelected\n -IsPipetteDipSelected\n -ProfileSelected\n -PcbFrameInLockPosition)
+SelectProfile --> PrepareTapeFeederComponent : NextStep(\n -isAlreadyReferenced\n -IsPlacementSelected\n -IsTapeFeederComponentSelected\n -ProfileSelected\n -PcbFrameInLockPosition)
+SelectProfile --> ProvideComponent : NextStep(\n -isAlreadyReferenced\n -IsCyclicWorkflowMode\n -PcbFrameInLockPosition)
+SelectProfile --> PrepareProvideComponent : NextStep(\n -isAlreadyReferenced\n -IsPlacementSelected\n -ProfileSelected\n -PcbFrameInLockPosition)
+Reference --> PreparePickUpFromTray : NextStep(\n -IsAlreadyReferenced\n -IsBigComponentSelected\n -IsPlacementSelected\n - PcbFrameInLockPosition)
+PreparePickUpFromTray --> PickUpFromTray : NextStep(\n -IsPreparePickUpFromTrayFinished)
+Undefined --> Undefined : Logout
+Undefined --> Undefined : Logout
+Undefined --> SelectProfile : NextStep
+Undefined --> PcbVerification : StartMesProzess
+PcbVerification --> VerifyPcb : StartMesProzess(\n -IsPcbVerificationFinished)
+VerifyPcb --> Reference : NextStep(\n -IsVerifyPcbFinished)
+VerifyPcb --> VerifyPcb : StartMesProzess
+VerifyPcb --> CanceledWorkflow : CancelRework
+
+
+state SelectProfile {
+}
+state PreparePickUpFromTray {
+}
+state PickUpFromTray {
+}
+state Reference {
+}
+state Undefined {
+}
+state PcbVerification {
+}
+state VerifyPcb {
+}
+state CanceledWorkflow {
+}
+PcbVerification --> PcbVerification : Failed
+PcbVerification --> CanceledWorkflow : CancelRework
+SelectProfile --> SelectProfile : Failed
+SelectProfile --> CanceledWorkflow : CancelRework
+Reference --> Reference : Failed
+Reference --> CanceledWorkflow : CancelRework
+PreparePickUpFromTray --> PreparePickUpFromTray : Failed
+PreparePickUpFromTray --> CanceledWorkflow : CancelRework
+PickUpFromTray --> PickUpFromTray : Failed
+PickUpFromTray --> CanceledWorkflow : CancelRework
+Reference --> AdjustPcb : NextStep(\n -IsReferenceFinished\n -ExtendedHeatersActive)
+Reference --> PrepareScavenging : NextStep(\n -IsReferenceFinished\n -ScavengerIsActive\n -ScavengingSelected)
+Reference --> AdjustCrosshair : NextStep(\n -IsReferenceFinished\n -IsDesolderSelected\n -PcbFrameInLockPosition)
+
+@enduml

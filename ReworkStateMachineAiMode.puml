@@ -1,0 +1,173 @@
+@startuml StateMachineReworkHR600Base
+skinparam state {
+  BackgroundColor LightBlue
+  BorderColor DarkBlue
+  FontSize 12
+}
+
+[*] --> Undefined
+
+' Transitions from Undefined
+Undefined --> Undefined : Logout
+Undefined --> SelectProfile : NextStep
+Undefined --> PcbVerification : StartMesProzess
+
+' Transitions from PcbVerification
+PcbVerification --> VerifyPcb : StartMesProzess [IsPcbVerificationFinished]
+PcbVerification --> CanceledWorkflow : CancelRework
+
+' Transitions from VerifyPcb
+VerifyPcb --> Reference : NextStep [IsVerifyPcbFinished]
+VerifyPcb --> VerifyPcb : StartMesProzess
+VerifyPcb --> CanceledWorkflow : CancelRework
+
+' Transitions from SelectProfile
+SelectProfile --> Undefined : Logout
+SelectProfile --> AdjustPcb : NextStep [IsAlreadyReferenced && ProfileSelected && ExtendedHeatersActive]
+SelectProfile --> PrepareScavenging : NextStep [IsAlreadyReferenced && ScavengerIsActive && ScavengingSelected]
+SelectProfile --> AdjustCrosshair : NextStep [IsAlreadyReferenced && IsDesolderSelected && ProfileSelected && PcbFrameInLockPosition]
+SelectProfile --> PreparePickUpFromTray : NextStep [IsAlreadyReferenced && IsBigComponentSelected && IsPlacementSelected && PcbFrameInLockPosition && ProfileSelected]
+SelectProfile --> PrepareDipComponent : NextStep [IsAlreadyReferenced && IsPlacementSelected && IsDipComponentSelected && ProfileSelected && PcbFrameInLockPosition]
+SelectProfile --> PrepareProvidePrintedComponent : NextStep [IsAlreadyReferenced && IsPlacementSelected && IsPrintComponentSelected && ProfileSelected && PcbFrameInLockPosition]
+SelectProfile --> ChangePipetteBeforePipetteDip : NextStep [IsAlreadyReferenced && IsPlacementSelected && IsPinTransferSelected && ProfileSelected && PcbFrameInLockPosition]
+SelectProfile --> PrepareTapeFeederComponent : NextStep [IsAlreadyReferenced && IsPlacementSelected && IsTapeFeederComponentSelected && ProfileSelected && PcbFrameInLockPosition]
+SelectProfile --> ProvideComponent : NextStep [IsAlreadyReferenced && IsCyclicWorkflowMode && PcbFrameInLockPosition]
+SelectProfile --> PrepareProvideComponent : NextStep [IsAlreadyReferenced && IsPlacementSelected && ProfileSelected && PcbFrameInLockPosition]
+SelectProfile --> Inspection : NextStep [IsAlreadyReferenced && IsInspectionSelected && ProfileSelected && PcbFrameInLockPosition]
+SelectProfile --> AdjustPcbForSolder : NextStep [IsAlreadyReferenced && IsSolderSelected && ProfileSelected && ExtendedHeatersActive]
+SelectProfile --> AdjustCrosshairForSolder : NextStep [IsAlreadyReferenced && IsSolderSelected && ProfileSelected && PcbFrameInLockPosition]
+SelectProfile --> InspectionAfterSolder : NextStep [IsAlreadyReferenced && IsInspectionAfterSolderSelected && ProfileSelected && PcbFrameInLockPosition]
+SelectProfile --> Reference : NextStep [ProfileSelected]
+SelectProfile --> VerifyPcb : StartMesProzess [IsPcbVerificationFinished]
+SelectProfile --> InsertScavengingPipette : NextStep [ScavengingSelected && ProfileSelected && IsAlreadyReferenced]
+
+' Transitions from Reference
+Reference --> ProvideComponent : NextStep [IsReferenceFinished && IsCyclicWorkflowMode && PcbFrameInLockPosition]
+Reference --> AdjustPcb : NextStep [IsReferenceFinished && ExtendedHeatersActive]
+Reference --> PrepareScavenging : NextStep [IsReferenceFinished && ScavengerIsActive && ScavengingSelected]
+Reference --> AdjustCrosshair : NextStep [IsReferenceFinished && IsDesolderSelected && PcbFrameInLockPosition]
+Reference --> PreparePickUpFromTray : NextStep [IsReferenceFinished && IsBigComponentSelected && IsPlacementSelected && PcbFrameInLockPosition]
+Reference --> PrepareProvidePrintedComponent : NextStep [IsReferenceFinished && IsPlacementSelected && IsPrintComponentSelected && PcbFrameInLockPosition]
+Reference --> PrepareDipComponent : NextStep [IsReferenceFinished && IsPlacementSelected && IsDipComponentSelected && PcbFrameInLockPosition]
+Reference --> ChangePipetteBeforePipetteDip : NextStep [IsReferenceFinished && IsPlacementSelected && IsPinTransferSelected && PcbFrameInLockPosition]
+Reference --> PrepareTapeFeederComponent : NextStep [IsReferenceFinished && IsPlacementSelected && IsTapeFeederComponentSelected && PcbFrameInLockPosition]
+Reference --> PrepareProvideComponent : NextStep [IsReferenceFinished && IsPlacementSelected && PcbFrameInLockPosition]
+Reference --> Inspection : NextStep [IsReferenceFinished && IsInspectionSelected && PcbFrameInLockPosition]
+Reference --> AdjustPcbForSolder : NextStep [IsReferenceFinished && IsSolderSelected && ExtendedHeatersActive]
+Reference --> AdjustCrosshairForSolder : NextStep [IsReferenceFinished && IsSolderSelected && PcbFrameInLockPosition]
+Reference --> InspectionAfterSolder : NextStep [IsReferenceFinished && IsInspectionAfterSolderSelected && PcbFrameInLockPosition]
+Reference --> VerifyPcb : NextStep
+Reference --> CanceledWorkflow : CancelRework
+Reference --> VerifyPcb : StartMesProzess
+Reference --> InsertScavengingPipette : NextStep [IsReferenceFinished && ScavengingSelected]
+
+' Transitions from AdjustPcb
+AdjustPcb --> PrepareScavenging : NextStep [ScavengerIsActive && ScavengingSelected]
+AdjustPcb --> AdjustCrosshair : NextStep [IsDesolderSelected]
+AdjustPcb --> PreparePickUpFromTray : NextStep [IsBigComponentSelected && IsPlacementSelected]
+AdjustPcb --> PrepareProvidePrintedComponent : NextStep [IsPlacementSelected && IsPrintComponentSelected]
+AdjustPcb --> PrepareDipComponent : NextStep [IsPlacementSelected && IsDipComponentSelected]
+AdjustPcb --> ChangePipetteBeforePipetteDip : NextStep [IsPlacementSelected && IsPinTransferSelected]
+AdjustPcb --> PrepareTapeFeederComponent : NextStep [IsPlacementSelected && IsTapeFeederComponentSelected]
+AdjustPcb --> PrepareProvideComponent : NextStep [IsPlacementSelected]
+AdjustPcb --> Inspection : NextStep [IsInspectionSelected]
+AdjustPcb --> AdjustCrosshairForSolder : NextStep [IsSolderSelected]
+AdjustPcb --> InspectionAfterSolder : NextStep [IsInspectionAfterSolderSelected]
+AdjustPcb --> FinishRework : NextStep
+AdjustPcb --> CanceledWorkflow : CancelRework
+AdjustPcb --> VerifyPcb : StartMesProzess
+
+' Transitions from AdjustCrosshair
+AdjustCrosshair --> AdjustTeSensor : NextStep [AdjustDriveFinished]
+AdjustCrosshair --> CanceledWorkflow : CancelRework
+AdjustCrosshair --> VerifyPcb : StartMesProzess
+
+' Transitions from AdjustTeSensor
+AdjustTeSensor --> InsertScavengingPipette : NextStep [ScavengerIsActive && ScavengingSelected && PrepareScavengingFinished]
+AdjustTeSensor --> Desolder : NextStep [AdjustDriveFinished && IsDesolderSelected]
+AdjustTeSensor --> FinishRework : NextStep
+AdjustTeSensor --> CanceledWorkflow : CancelRework
+AdjustTeSensor --> VerifyPcb : StartMesProzess
+
+' Transitions from InsertScavengingPipette
+InsertScavengingPipette --> Desolder : NextStep [InsertScavengingPipetteFinished]
+InsertScavengingPipette --> CanceledWorkflow : CancelRework
+InsertScavengingPipette --> VerifyPcb : StartMesProzess
+
+' Transitions from Desolder
+Desolder --> ScavengingElement : NextStep [ScavengerIsActive && ScavengingSelected && IsDesolderFinished]
+Desolder --> CleanBoard : NextStep [IsDesolderFinished]
+Desolder --> AdjustCrosshair : PreviousStep
+Desolder --> CanceledWorkflow : CancelRework
+Desolder --> VerifyPcb : StartMesProzess
+
+' Transitions from CleanBoard
+CleanBoard --> PreparePickUpFromTray : NextStep [IsBigComponentSelected && IsPlacementSelected]
+CleanBoard --> PrepareProvidePrintedComponent : NextStep [IsPlacementSelected && IsPrintComponentSelected]
+CleanBoard --> PrepareDipComponent : NextStep [IsPlacementSelected && IsDipComponentSelected]
+CleanBoard --> ChangePipetteBeforePipetteDip : NextStep [IsPlacementSelected && IsPinTransferSelected]
+CleanBoard --> PrepareTapeFeederComponent : NextStep [IsPlacementSelected && IsTapeFeederComponentSelected]
+CleanBoard --> PrepareProvideComponent : NextStep [IsPlacementSelected]
+CleanBoard --> PreparePickUpFromTray : NextStep [IsPlacementSelected && IsBigComponentSelected]
+CleanBoard --> Inspection : NextStep [IsInspectionSelected]
+CleanBoard --> AdjustCrosshairForSolder : NextStep [IsSolderSelected]
+CleanBoard --> InspectionAfterSolder : NextStep [IsInspectionAfterSolderSelected]
+CleanBoard --> FinishRework : NextStep
+CleanBoard --> CanceledWorkflow : CancelRework
+CleanBoard --> VerifyPcb : StartMesProzess
+
+' Transitions from PrepareProvidePrintedComponent
+PrepareProvidePrintedComponent --> ProvidePrintedComponent : NextStep
+PrepareProvidePrintedComponent --> CanceledWorkflow : CancelRework
+PrepareProvidePrintedComponent --> VerifyPcb : StartMesProzess
+
+' Transitions from ProvidePrintedComponent
+ProvidePrintedComponent --> PinDetection : NextStep [IsProvidePrintedComponentFinished]
+ProvidePrintedComponent --> CanceledWorkflow : CancelRework
+ProvidePrintedComponent --> VerifyPcb : StartMesProzess
+
+' Transitions from PrepareDipComponent
+PrepareDipComponent --> ProvideComponent : NextStep [IsBigComponentNotSelected]
+PrepareDipComponent --> DipComponent : NextStep [IsBigComponentSelected]
+PrepareDipComponent --> CanceledWorkflow : CancelRework
+PrepareDipComponent --> VerifyPcb : StartMesProzess
+
+' Transitions from PrepareProvideComponent
+PrepareProvideComponent --> ProvideComponent : NextStep
+PrepareProvideComponent --> CanceledWorkflow : CancelRework
+PrepareProvideComponent --> VerifyPcb : StartMesProzess
+
+' Transitions from ChangePipetteBeforePipetteDip
+ChangePipetteBeforePipetteDip --> SelectContactSurfaces : NextStep [IsChangePipetteBeforePipetteDipFinished]
+ChangePipetteBeforePipetteDip --> CanceledWorkflow : CancelRework
+ChangePipetteBeforePipetteDip --> VerifyPcb : StartMesProzess
+
+' Transitions from SelectContactSurfaces
+SelectContactSurfaces --> ApplySolderPasteOnContactSurface : NextStep [IsSelectContactSurfacesFinished]
+SelectContactSurfaces --> CanceledWorkflow : CancelRework
+SelectContactSurfaces --> VerifyPcb : StartMesProzess
+
+' Transitions from ApplySolderPasteOnContactSurface
+ApplySolderPasteOnContactSurface --> InspectingApplySolderPasteOnContactSurface : NextStep [IsApplySolderPasteOnContactSurfaceFinished]
+ApplySolderPasteOnContactSurface --> CanceledWorkflow : CancelRework
+ApplySolderPasteOnContactSurface --> VerifyPcb : StartMesProzess
+
+' Transitions from InspectingApplySolderPasteOnContactSurface
+InspectingApplySolderPasteOnContactSurface --> ApplySolderPasteOnContactSurface : NextStep [IsRedoSelectContactSurfacesFinished]
+InspectingApplySolderPasteOnContactSurface --> ChangePipetteAfterPipetteDip : NextStep [IsInspectingApplySolderPasteOnContactSurfaceFinished]
+InspectingApplySolderPasteOnContactSurface --> CanceledWorkflow : CancelRework
+InspectingApplySolderPasteOnContactSurface --> VerifyPcb : StartMesProzess
+
+' Transitions from ChangePipetteAfterPipetteDip
+ChangePipetteAfterPipetteDip --> PrepareTapeFeederComponent : NextStep [IsChangePipetteAfterPipetteDipFinished]
+ChangePipetteAfterPipetteDip --> CanceledWorkflow : CancelRework
+ChangePipetteAfterPipetteDip --> VerifyPcb : StartMesProzess
+
+' Transitions from PrepareTapeFeederComponent
+PrepareTapeFeederComponent --> TapeFeederComponent : NextStep [IsPrepareTapefeederFinished && IsTapeFeederComponentSelected]
+PrepareTapeFeederComponent --> TapeFeederComponent : NextStep [IsPrepareTapefeederFinished && IsPinTransferSelected]
+PrepareTapeFeederComponent --> CanceledWorkflow : CancelRework
+
+' Transitions from TapeFeederComponent
+TapeFeederComponent --> PickupTapeFeederComponent : NextStep [IsTapeFeederComponentFinished && IsTapeFeederComponentSelected]
+TapeFeederComponent --> Pick

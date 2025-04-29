@@ -1,0 +1,881 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StateMachineDefinitions>
+  <StateMachine name="StateMachineReworkHR600Base">
+
+    <State name='Undefined'>
+      <Action name='Logout' nextState='Undefined'/>
+      <Action name='NextStep' nextState='SelectProfile' />
+      <Action name='StartMesProzess' nextState='PcbVerification'/>
+    </State>
+
+    <State name='PcbVerification'>
+      <Action name='StartMesProzess' nextState='VerifyPcb'>
+        <Condition name='IsPcbVerificationFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'/>
+    </State>
+
+    <State name='VerifyPcb'>
+      <Action name='NextStep' nextState='Reference'>
+        <Condition name='IsVerifyPcbFinished' />
+      </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+      <Action name='CancelRework' nextState='CanceledWorkflow'/>
+    </State>
+    
+    <State name='SelectProfile'>
+      <Action name='Logout' nextState='Undefined'/>
+      <Action name='NextStep' nextState='AdjustPcb'>
+        <Condition name='IsAlreadyReferenced' />
+        <Condition name='ProfileSelected' />
+        <Condition name='ExtendedHeatersActive' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareScavenging'>
+        <Condition name='IsAlreadyReferenced' />
+        <Condition name='ScavengerIsActive' />
+        <Condition name='ScavengingSelected' />
+      </Action>
+      <Action name='NextStep' nextState='AdjustCrosshair'>
+        <Condition name='IsAlreadyReferenced' />
+        <Condition name='IsDesolderSelected' />
+        <Condition name='ProfileSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='PreparePickUpFromTray'>
+        <Condition name='IsAlreadyReferenced' />
+        <Condition name='IsBigComponentSelected' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+        <Condition name='ProfileSelected' />
+      </Action>
+      
+      <Action name='NextStep' nextState='PrepareDipComponent'>
+        <Condition name='IsAlreadyReferenced' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsDipComponentSelected' />
+        <Condition name='ProfileSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareProvidePrintedComponent'>
+        <Condition name='IsAlreadyReferenced' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsPrintComponentSelected' />
+        <Condition name='ProfileSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='ChangePipetteBeforePipetteDip'>
+        <Condition name='IsAlreadyReferenced' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsPinTransferSelected' />
+        <Condition name='ProfileSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+
+      <Action name='NextStep' nextState='PrepareTapeFeederComponent'>
+        <Condition name='IsAlreadyReferenced' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsTapeFeederComponentSelected' />
+        <Condition name='ProfileSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      
+      <Action name='NextStep' nextState='ProvideComponent'>
+        <Condition name='IsAlreadyReferenced' />
+        <Condition name='IsCyclicWorkflowMode' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareProvideComponent'>
+        <Condition name='IsAlreadyReferenced' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='ProfileSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='Inspection'>
+        <Condition name='IsAlreadyReferenced' />
+        <Condition name='IsInspectionSelected' />
+        <Condition name='ProfileSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+		<Action name='NextStep' nextState='AdjustPcbForSolder'>
+			<Condition name='IsAlreadyReferenced' />
+			<Condition name='IsSolderSelected' />
+			<Condition name='ProfileSelected' />
+			<Condition name='ExtendedHeatersActive' />
+		</Action>
+		<Action name='NextStep' nextState='AdjustCrosshairForSolder'>
+        <Condition name='IsAlreadyReferenced' />
+        <Condition name='IsSolderSelected' />
+        <Condition name='ProfileSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='InspectionAfterSolder'>
+        <Condition name='IsAlreadyReferenced' />
+        <Condition name='IsInspectionAfterSolderSelected' />
+        <Condition name='ProfileSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='Reference'>
+        <Condition name='ProfileSelected' />
+      </Action>      
+      <Action name='StartMesProzess' nextState='VerifyPcb'>
+        <Condition name='IsPcbVerificationFinished' />
+      </Action>
+      <Action name='NextStep' nextState='InsertScavengingPipette'>
+        <Condition name='ScavengingSelected' />
+        <Condition name='ProfileSelected' />
+        <Condition name='IsAlreadyReferenced' />
+      </Action>
+    </State>
+
+    <State name='Reference'>
+      <Action name='NextStep' nextState='ProvideComponent'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsCyclicWorkflowMode' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+
+      <Action name='NextStep' nextState='AdjustPcb'>
+        <Condition name='IsReferenceFinished' />       
+        <Condition name='ExtendedHeatersActive' />
+      </Action>      
+      <Action name='NextStep' nextState='PrepareScavenging'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='ScavengerIsActive' />
+        <Condition name='ScavengingSelected' />
+      </Action>
+      <Action name='NextStep' nextState='AdjustCrosshair'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsDesolderSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+
+      <Action name='NextStep' nextState='PreparePickUpFromTray'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsBigComponentSelected' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      
+      <Action name='NextStep' nextState='PrepareProvidePrintedComponent'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsPrintComponentSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareDipComponent'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsDipComponentSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='ChangePipetteBeforePipetteDip'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsPinTransferSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareTapeFeederComponent'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsTapeFeederComponentSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareProvideComponent'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='Inspection'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsInspectionSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+		<Action name='NextStep' nextState='AdjustPcbForSolder'>
+			<Condition name='IsReferenceFinished' />
+			<Condition name='IsSolderSelected' />
+			<Condition name='ExtendedHeatersActive' />
+		</Action>
+      <Action name='NextStep' nextState='AdjustCrosshairForSolder'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsSolderSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='InspectionAfterSolder'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsInspectionAfterSolderSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='VerifyPcb' />
+      <Action name='CancelRework' nextState='CanceledWorkflow'/>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />    
+
+      <Action name='NextStep' nextState='InsertScavengingPipette'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='ScavengingSelected' />
+      </Action>
+    </State>
+
+    <!--DESOLDER   !    DESOLDER   !    DESOLDER   !    DESOLDER   !-->
+    
+    
+    <State name='AdjustPcb'>
+      <Action name='NextStep' nextState='PrepareScavenging'>
+        <Condition name='ScavengerIsActive' />
+        <Condition name='ScavengingSelected' />
+      </Action>
+      <Action name='NextStep' nextState='AdjustCrosshair'>
+        <Condition name='IsDesolderSelected' />
+      </Action>
+      <Action name='NextStep' nextState='PreparePickUpFromTray'>
+        <Condition name='IsBigComponentSelected' />
+        <Condition name='IsPlacementSelected' />
+      </Action>
+		<Action name='NextStep' nextState='PrepareProvidePrintedComponent'>
+			<Condition name='IsPlacementSelected' />
+			<Condition name='IsPrintComponentSelected' />
+		</Action>
+		<Action name='NextStep' nextState='PrepareDipComponent'>
+			<Condition name='IsPlacementSelected' />
+			<Condition name='IsDipComponentSelected' />
+		</Action>
+		<Action name='NextStep' nextState='ChangePipetteBeforePipetteDip'>
+			<Condition name='IsPlacementSelected' />
+			<Condition name='IsPinTransferSelected' />
+		</Action>
+		<Action name='NextStep' nextState='PrepareTapeFeederComponent'>
+			<Condition name='IsPlacementSelected' />
+			<Condition name='IsTapeFeederComponentSelected' />
+		</Action>
+		<Action name='NextStep' nextState='PrepareProvideComponent'>
+			<Condition name='IsPlacementSelected' />
+		</Action>
+		<Action name='NextStep' nextState='Inspection'>
+			<Condition name='IsInspectionSelected' />
+		</Action>
+		<Action name='NextStep' nextState='AdjustCrosshairForSolder'>
+			<Condition name='IsSolderSelected' />
+		</Action>
+		<Action name='NextStep' nextState='InspectionAfterSolder'>
+			<Condition name='IsInspectionAfterSolderSelected' />
+		</Action>
+		<Action name='NextStep' nextState='FinishRework'/>
+		<Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+		<Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>  
+
+    <State name='AdjustCrosshair'>
+      <Action name='NextStep' nextState='AdjustTeSensor'>
+        <Condition name='AdjustDriveFinished' />
+      </Action>
+      <!--<Action name='NextStep' nextState='Desolder'>
+        <Condition name='AdjustDriveFinished' />
+      </Action>-->
+      <Action name='CancelRework' nextState='CanceledWorkflow'/>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <State name='AdjustTeSensor'>
+      <Action name='NextStep' nextState='InsertScavengingPipette'>
+        <Condition name='ScavengerIsActive' />
+        <Condition name='ScavengingSelected' />
+        <Condition name='PrepareScavengingFinished' />
+      </Action>
+      <Action name='NextStep' nextState='Desolder'>
+        <Condition name='AdjustDriveFinished' />
+        <Condition name='IsDesolderSelected' />
+      </Action>
+      <Action name='NextStep' nextState='FinishRework'/>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <State name='InsertScavengingPipette'>
+      <Action name='NextStep' nextState='Desolder'>
+        <Condition name='InsertScavengingPipetteFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'/>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <State name='Desolder'>
+      <Action name='NextStep' nextState='ScavengingElement'>
+        <Condition name='ScavengerIsActive' />
+        <Condition name='ScavengingSelected' />
+        <Condition name='IsDesolderFinished' />
+      </Action>
+      
+      <Action name='NextStep' nextState='CleanBoard'>
+        <Condition name='IsDesolderFinished' />
+      </Action>
+      
+      <Action name='PreviousStep' nextState='AdjustCrosshair'/>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <State name='CleanBoard'>
+      <Action name='NextStep' nextState='PreparePickUpFromTray'>
+        <Condition name='IsBigComponentSelected' />
+        <Condition name='IsPlacementSelected' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareProvidePrintedComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsPrintComponentSelected' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareDipComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsDipComponentSelected' />
+      </Action>
+      <Action name='NextStep' nextState='ChangePipetteBeforePipetteDip'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsPinTransferSelected' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareTapeFeederComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsTapeFeederComponentSelected' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareProvideComponent'>
+        <Condition name='IsPlacementSelected' />
+      </Action>
+      <Action name='NextStep' nextState='PreparePickUpFromTray'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsBigComponentSelected' />
+      </Action>      
+      <Action name='NextStep' nextState='Inspection'>
+        <Condition name='IsInspectionSelected' />
+      </Action>
+      <Action name='NextStep' nextState='AdjustCrosshairForSolder'>
+        <Condition name='IsSolderSelected' />
+      </Action>
+      <Action name='NextStep' nextState='InspectionAfterSolder'>
+        <Condition name='IsInspectionAfterSolderSelected' />
+      </Action>
+      <Action name='NextStep' nextState='FinishRework'></Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <!--DESOLDER   !    DESOLDER   !    DESOLDER   !    DESOLDER   !
+
+	
+	    PLACEMENT   !    PLACEMENT   !    PLACEMENT   !    PLACEMENT   !-->
+   
+    
+    <State name='PrepareProvidePrintedComponent' >
+      <Action name='NextStep' nextState='ProvidePrintedComponent' />
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <State name='ProvidePrintedComponent' >
+      <Action name='NextStep' nextState='PinDetection'>
+        <Condition name='IsProvidePrintedComponentFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <State name='PrepareDipComponent'>
+      <Action name='NextStep' nextState='ProvideComponent'>
+        <Condition name='IsBigComponentNotSelected' />
+      </Action>
+      <Action name='NextStep' nextState='DipComponent'>
+        <Condition name='IsBigComponentSelected' />
+      </Action>
+      
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <State name='PrepareProvideComponent'>
+      <Action name='NextStep' nextState='ProvideComponent' />
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <State name='ChangePipetteBeforePipetteDip'>
+      <Action name='NextStep' nextState='SelectContactSurfaces' >
+        <Condition name='IsChangePipetteBeforePipetteDipFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+    <State name='SelectContactSurfaces'>
+      <Action name='NextStep' nextState='ApplySolderPasteOnContactSurface' >
+        <Condition name='IsSelectContactSurfacesFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+    <State name='ApplySolderPasteOnContactSurface'>
+      <Action name='NextStep' nextState='InspectingApplySolderPasteOnContactSurface' >
+        <Condition name='IsApplySolderPasteOnContactSurfaceFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+    <State name='InspectingApplySolderPasteOnContactSurface'>
+      <Action name='NextStep' nextState='ApplySolderPasteOnContactSurface' >
+        <Condition name='IsRedoSelectContactSurfacesFinished' />
+      </Action>
+      <Action name='NextStep' nextState='ChangePipetteAfterPipetteDip' >
+        <Condition name='IsInspectingApplySolderPasteOnContactSurfaceFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+    <State name='ChangePipetteAfterPipetteDip'>
+      <Action name='NextStep' nextState='PrepareTapeFeederComponent' >
+        <Condition name='IsChangePipetteAfterPipetteDipFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+    <State name='PrepareTapeFeederComponent'>
+      <Action name='NextStep' nextState='TapeFeederComponent' >
+        <Condition name='IsPrepareTapefeederFinished' />
+        <Condition name='IsTapeFeederComponentSelected' />
+      </Action>
+      <Action name='NextStep' nextState='TapeFeederComponent' >
+        <Condition name='IsPrepareTapefeederFinished' />
+        <Condition name='IsPinTransferSelected' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+    </State>
+
+    <State name='TapeFeederComponent'>
+      <Action name='NextStep' nextState='PickupTapeFeederComponent'>
+        <Condition name='IsTapeFeederComponentFinished' />
+        <Condition name='IsTapeFeederComponentSelected' />
+      </Action>
+		<Action name='NextStep' nextState='PickupTapeFeederComponent'>
+			<Condition name='IsTapeFeederComponentFinished' />
+			<Condition name='IsPinTransferSelected' />
+		</Action>
+		<Action name='NextStep' nextState='TapeFeederComponent' >
+        <Condition name='IsPrepareTapefeederFinished' />
+        <Condition name='IsPinTransferSelected' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+    </State>
+
+    <State name='PickupTapeFeederComponent'>
+      <Action name='NextStep' nextState='PinDetection'>
+        <Condition name='IsPickupTapeFeederComponentFinished' />
+        <Condition name='IsTapeFeederComponentSelected' />
+      </Action>
+		<Action name='NextStep' nextState='PinDetection'>
+			<Condition name='IsPickupTapeFeederComponentFinished' />
+			<Condition name='IsPinTransferSelected' />
+		</Action>
+		<Action name='NextStep' nextState='TapeFeederComponent' >
+        <Condition name='IsPrepareTapefeederFinished' />
+        <Condition name='IsPinTransferSelected' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+    </State>
+
+    <State name='ProvideComponent'>
+      <Action name='NextStep' nextState='DipComponent'>
+        <Condition name='IsProvideComponentFinished' />
+        <Condition name='IsDipComponentSelected' />
+      </Action>
+      <Action name='NextStep' nextState='PinDetection'>
+        <Condition name='IsProvideComponentFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <State name='DipComponent'>
+      <Action name='NextStep' nextState='PinDetection'>
+        <Condition name='IsDipComponentFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <State name='PreparePickUpFromTray'>
+      <Action name='NextStep' nextState='PickUpFromTray'>
+        <Condition name='IsPreparePickUpFromTrayFinished' />
+      </Action>    
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <State name='PickUpFromTray'>
+     
+      <Action name='NextStep' nextState='PrepareProvidePrintedComponent'>
+        <Condition name='IsPickUpFromTrayFinished' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsPrintComponentSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareDipComponent'>
+        <Condition name='IsPickUpFromTrayFinished' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsDipComponentSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='PinDetection'>
+        <Condition name='IsPickUpFromTrayFinished' />
+        <Condition name='IsBigComponentSelected' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'>         
+      </Action>
+    </State>
+    
+    <State name='PinDetection'>
+      <Action name='NextStep' nextState='FindBestMatch'>
+        <Condition name='IsPinDetectionFinished' />
+        <Condition name='IsDesolderSelected' />
+      </Action>
+      <Action name='NextStep' nextState='FindBestMatch'>
+        <Condition name='IsCyclicWorkflowMode' />
+      </Action>
+      <Action name='NextStep' nextState='AdjustCrosshairAfterProvideComponent'>
+        <Condition name='IsPinDetectionFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <State name='AdjustCrosshairBeforeProvideComponent'>
+      <Action name='NextStep' nextState='FindBestMatch'>
+        <Condition name='IsAdjustDriveBeforeProvideFinished' />
+      </Action>
+      <Action name='PreviousStep' nextState='PrepareTapeFeederComponent'>
+        <Condition name='IsTapeFeederComponentSelected' />
+      </Action>
+      <Action name='PreviousStep' nextState='PrepareTapeFeederComponent' />
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+    </State>
+
+    <State name='AdjustCrosshairAfterProvideComponent'>
+      <Action name='NextStep' nextState='FindBestMatch'>
+        <Condition name='IsAdjustDriveAfterProvideFinished' />
+      </Action>
+      <!--<Action name='PreviousStep' nextState='ProvidePrintedComponent'>
+        <Condition name='IsPrintComponentSelected' />
+      </Action>
+      <Action name='PreviousStep' nextState='ProvideComponent' />-->
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <State name='FindBestMatch'>
+      <Action name='NextStep' nextState='AdjustBestMatch'>
+        <Condition name='IsFindBestMatchFinished'/>
+      </Action>
+      <!--<Action name='PreviousStep' nextState='AdjustCrosshairBeforeProvideComponent'>
+        <Condition name='IsAdjustDriveBeforeProvideFinished' />
+      </Action>
+      <Action name='PreviousStep' nextState='AdjustCrosshairAfterProvideComponent'/>-->
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <State name='AdjustBestMatch'>
+      <Action name='NextStep' nextState='PlaceComponent'>
+        <Condition name='IsPinDetectionFinished'/>
+      </Action>
+      <Action name='NextStep' nextState='PlaceComponent'>
+        <Condition name='IsAdjustDriveAfterProvideFinished'/>
+      </Action>
+      <Action name='NextStep' nextState='TapeFeederComponent'>
+        <Condition name='IsTapeFeederComponentSelected' />
+        <Condition name='IsAdjustDriveBeforeProvideFinished' />
+      </Action>
+      <!--<Action name='PreviousStep' nextState='AdjustCrosshairAfterProvideComponent'/>-->
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <State name='PlaceComponent'>
+      <Action name='NextStep' nextState='ProvideComponent'>
+        <Condition name='IsPlaceComponentFinished' />
+        <Condition name='IsCyclicWorkflowMode' />
+      </Action>
+      <Action name='NextStep' nextState='Inspection'>
+        <Condition name='IsPlaceComponentFinished' />
+        <Condition name='IsInspectionSelected' />
+      </Action>
+      <Action name='NextStep' nextState='Solder'>
+        <Condition name='IsPlaceComponentFinished' />
+        <Condition name='IsSolderSelected' />
+        <Condition name='IsDesolderSelected' />
+      </Action>
+      <Action name='NextStep' nextState='AdjustTeSensorForSolder'>
+        <Condition name='IsPlaceComponentFinished' />
+        <Condition name='IsSolderSelected' />
+      </Action>
+      <Action name='NextStep' nextState='InspectionAfterSolder'>
+        <Condition name='IsPlaceComponentFinished' />
+        <Condition name='IsInspectionAfterSolderSelected' />
+      </Action>
+      <Action name='NextStep' nextState='FinishRework'>
+        <Condition name='IsPlaceComponentFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+    <!--PLACEMENT   !    PLACEMENT   !    PLACEMENT   !    PLACEMENT   !
+	
+	
+	
+	    INSPECTION   !    INSPECTION   !    INSPECTION   !    INSPECTION   !-->
+    <State name='Inspection'>
+      <Action name='NextStep' nextState='Solder'>
+        <Condition name='IsSolderSelected' />
+        <Condition name='IsDesolderSelected' />
+      </Action>
+      <Action name='NextStep' nextState='AdjustTeSensorForSolder'>
+        <Condition name='IsSolderSelected' />
+        <Condition name='IsPlacementSelected' />
+      </Action>
+      <Action name='NextStep' nextState='Solder'>
+        <Condition name='IsSolderSelected' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsDesolderSelected'/>
+      </Action>
+        <Action name='NextStep' nextState='AdjustCrosshairForSolder'>
+          <Condition name='IsSolderSelected' />
+        </Action>
+      <Action name='NextStep' nextState='FinishRework'>
+        <Condition name='IsInspectionAfterSolderSelected' />
+      </Action>
+      <Action name='NextStep' nextState='FinishRework' />
+      <Action name='CancelRework' nextState='CanceledWorkflow'/>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+    <!--INSPECTION   !    INSPECTION   !    INSPECTION   !    INSPECTION   !
+
+	
+	    SOLDER   !    SOLDER   !    SOLDER   !    SOLDER   !    SOLDER   !-->
+    
+    
+    <State name='AdjustPcbForSolder'>
+      <Action name='NextStep' nextState='AdjustCrosshairForSolder'>
+        <Condition name='IsSolderSelected' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'/>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+    
+    <State name='AdjustCrosshairForSolder'>
+      <Action name='NextStep' nextState='AdjustTeSensorForSolder'>
+        <Condition name='IsAdjustDriveForSolderFinished' />
+      </Action>
+      <!--<Action name='NextStep' nextState='Solder'>
+        <Condition name='IsAdjustDriveForSolderFinished' />
+      </Action>-->
+		<!--<Action name='NextStep' nextState='InspectionAfterSolder'>		
+			<Condition name='IsInspectionAfterSolderSelected' />
+		</Action>
+		<Action name='NextStep' nextState='FinishRework'>
+			<Condition name='IsSolderingFinished' />
+		</Action>-->
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <State name='AdjustTeSensorForSolder'>
+      <Action name='NextStep' nextState='Solder'>
+        <Condition name='IsSolderSelected' />
+      </Action>
+      <Action name='NextStep' nextState='InspectionAfterSolder'>
+        <Condition name='IsInspectionAfterSolderSelected' />
+      </Action>
+      <Action name='NextStep' nextState='FinishRework'>
+        <Condition name='IsSolderingFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <State name='Solder'>
+      <Action name='NextStep' nextState='InspectionAfterSolder'>
+        <Condition name='IsSolderingFinished' />
+        <Condition name='IsInspectionAfterSolderSelected' />
+      </Action>
+      <Action name='NextStep' nextState='FinishRework'>
+        <Condition name='IsSolderingFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+    <!--SOLDER   !    SOLDER   !    SOLDER   !    SOLDER   !    SOLDER   !-->
+
+
+    <State name='InspectionAfterSolder'>
+      <Action name='NextStep' nextState='FinishRework' />
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State> 
+
+    <State name='PrepareScavenging'>
+      <Action name='NextStep' nextState='AdjustTeSensor'>
+        <Condition name='ScavengerIsActive' />
+        <Condition name='ScavengingSelected' />
+        <Condition name='PrepareScavengingFinished' />
+      </Action>
+      <!--<Action name='NextStep' nextState='InsertScavengingPipette'>
+        <Condition name='ScavengerIsActive' />
+        <Condition name='ScavengingSelected' />
+        <Condition name='PrepareScavengingFinished' />
+      </Action>-->
+      <!--<Action name='NextStep' nextState='ScavengingElement'>
+        <Condition name='PrepareScavengingFinished' />
+        <Condition name='ScavengerIsActive' />
+      </Action>-->
+      <Action name='CancelRework' nextState='CanceledWorkflow'>
+      </Action>
+    </State>
+
+    <State name='ScavengingElement'>
+      <Action name ='NextStep' nextState='FinishedScavenging'>
+        <Condition name='ScavengingElementFinished'/>
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'>
+      </Action>
+    </State>
+
+    <State name='FinishedScavenging'>
+      <Action name='NextStep' nextState='PrepareProvidePrintedComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsPrintComponentSelected' />
+        <Condition name='ScavengerOnlySelected' />
+        <Condition name='ScavengingFinished' />
+      </Action>
+      <Action name='NextStep' nextState='PickUpFromTray'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsBigComponentSelected' />
+        <Condition name='ScavengerOnlySelected' />
+        <Condition name='ScavengingFinished' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareDipComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsDipComponentSelected' />
+        <Condition name='ScavengerOnlySelected' />
+        <Condition name='ScavengingFinished' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareProvideComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='ScavengerOnlySelected' />
+        <Condition name='ScavengingFinished' />
+      </Action>
+      <Action name='NextStep' nextState='Inspection'>
+        <Condition name='IsInspectionSelected' />
+        <Condition name='ScavengerOnlySelected' />
+        <Condition name='ScavengingFinished' />
+      </Action>
+      <Action name='NextStep' nextState='AdjustCrosshairForSolder'>
+        <Condition name='IsSolderSelected' />
+        <Condition name='ScavengerOnlySelected' />
+        <Condition name='ScavengingFinished' />
+      </Action>
+      <Action name='NextStep' nextState='InspectionAfterSolder'>
+        <Condition name='IsInspectionAfterSolderSelected' />
+        <Condition name='ScavengerOnlySelected' />
+        <Condition name='ScavengingFinished' />
+      </Action>
+      <Action name='NextStep' nextState='FinishRework'>
+        <Condition name='ScavengerOnlySelected' />
+        <Condition name='ScavengingFinished' />
+      </Action>
+      <Action name ='NextStep' nextState='MoveHeatingheadToTray'>
+        <Condition name='ScavengingFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'>
+      </Action>
+    </State>
+    
+    <State name='MoveHeatingheadToTray'>
+      <Action name='NextStep' nextState='PrepareProvidePrintedComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsPrintComponentSelected' />
+        <Condition name='IsHeatingHeadDriveFinished' />
+      </Action>
+      <Action name='NextStep' nextState='PickUpFromTray'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsBigComponentSelected' />
+        <Condition name='IsHeatingHeadDriveFinished' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareDipComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsDipComponentSelected' />
+        <Condition name='IsHeatingHeadDriveFinished' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareProvideComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsHeatingHeadDriveFinished' />
+      </Action>
+      <Action name='NextStep' nextState='Inspection'>
+        <Condition name='IsInspectionSelected' />
+        <Condition name='IsHeatingHeadDriveFinished' />
+      </Action>
+      <Action name='NextStep' nextState='AdjustCrosshairForSolder'>
+        <Condition name='IsSolderSelected' />
+        <Condition name='IsHeatingHeadDriveFinished' />
+      </Action>
+      <Action name='NextStep' nextState='InspectionAfterSolder'>
+        <Condition name='IsInspectionAfterSolderSelected' />
+        <Condition name='IsHeatingHeadDriveFinished' />
+      </Action>
+      <Action name='NextStep' nextState='FinishRework'>
+      <Condition name='IsHeatingHeadDriveFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow' />
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+    
+    <State name='FinishRework'>
+      <Action name='NextStep' nextState='Reference' />
+      <Action name='RedoRework' nextState='Reference'/>
+      <Action name='CancelRework' nextState='SelectProfile'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <State name='CanceledWorkflow'>
+      <Action name='Logout' nextState='Undefined'/>
+      <Action name='RedoLastStep' nextState='Delegate'/>
+      <Action name='RedoRework' nextState='Reference'> </Action>
+      <Action name='CancelRework' nextState='SelectProfile'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <State name='Delegate'>
+      <Action name='NextStep' nextState='AdjustCrosshair'>
+        <Condition name='IsLastStepDesolder' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareProvidePrintedComponent'>
+        <Condition name='IsLastStepPlacement' />
+        <Condition name='IsPrintComponentSelected'/>
+      </Action>
+      <Action name='NextStep' nextState='ChangePipetteBeforePipetteDip'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsPinTransferSelected' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareTapeFeederComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsTapeFeederComponentSelected' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareProvideComponent'>
+        <Condition name='IsLastStepPlacement' />
+      </Action>
+      <Action name='NextStep' nextState='Inspection'>
+        <Condition name='IsLastStepInspection' />
+      </Action>
+      <Action name='NextStep' nextState='AdjustCrosshairForSolder'>
+        <Condition name='IsLastStepSolder' />
+      </Action>
+      <Action name='NextStep' nextState='InspectionAfterSolder'>
+        <Condition name='IsLastStepInspectionAfterSolder' />
+      </Action>
+      <Action name='NextStep' nextState='SelectProfile'> </Action>
+      <Action name='NextStep' nextState='VerifyPcb' />
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+   
+  </StateMachine>
+</StateMachineDefinitions>
