@@ -1,0 +1,165 @@
+@startuml StateMachineReworkHR600Base
+
+skinparam state {
+  BackgroundColor White
+  BorderColor Black
+  ArrowColor Black
+}
+
+[*] --> Undefined
+
+state Undefined {
+}
+
+state SelectProfile {
+}
+
+state Reference {
+}
+
+state AdjustPcb {
+}
+
+state PrepareScavenging {
+}
+
+state AdjustCrosshair {
+}
+
+state AdjustTeSensor {
+}
+
+state InsertScavengingPipette {
+}
+
+state Desolder {
+}
+
+state CleanBoard {
+}
+
+state PreparePickUpFromTray {
+}
+
+state PickUpFromTray {
+}
+
+state PrepareProvideComponent {
+}
+
+state ProvideComponent {
+}
+
+state ChangePipetteBeforePipetteDip {
+}
+
+state DipComponent {
+}
+
+state PinDetection {
+}
+
+state AdjustCrosshairBeforeProvideComponent {
+}
+
+state AdjustCrosshairAfterProvideComponent {
+}
+
+state FindBestMatch {
+}
+
+state AdjustBestMatch {
+}
+
+state PlaceComponent {
+}
+
+state Inspection {
+}
+
+state AdjustPcbForSolder {
+}
+
+state AdjustCrosshairForSolder {
+}
+
+state AdjustTeSensorForSolder {
+}
+
+state Solder {
+}
+
+state InspectionAfterSolder {
+}
+
+state ScavengingElement {
+}
+
+state FinishedScavenging {
+}
+
+state MoveHeatingheadToTray {
+}
+
+state FinishRework {
+}
+
+state CanceledWorkflow {
+}
+
+Undefined -down-> SelectProfile : NextStep
+Undefined -up-> Undefined : Logout
+
+SelectProfile -down-> AdjustPcb : NextStep [IsAlreadyReferenced && \nProfileSelected && \nExtendedHeatersActive]
+SelectProfile -down-> PrepareScavenging : NextStep [IsAlreadyReferenced && \nScavengerIsActive && \nScavengingSelected]
+SelectProfile -down-> AdjustCrosshair : NextStep [IsAlreadyReferenced && \nIsDesolderSelected && \nProfileSelected && \nPcbFrameInLockPosition]
+SelectProfile -down-> PreparePickUpFromTray : NextStep [IsAlreadyReferenced && \nIsBigComponentSelected && \nIsPlacementSelected && \nPcbFrameInLockPosition && \nProfileSelected]
+SelectProfile -down-> ChangePipetteBeforePipetteDip : NextStep [IsAlreadyReferenced && \nIsPlacementSelected && \nIsPinTransferSelected && \nProfileSelected && \nPcbFrameInLockPosition]
+SelectProfile -down-> ProvideComponent : NextStep [IsAlreadyReferenced && \nIsCyclicWorkflowMode && \nPcbFrameInLockPosition]
+SelectProfile -down-> PrepareProvideComponent : NextStep [IsAlreadyReferenced && \nIsPlacementSelected && \nProfileSelected && \nPcbFrameInLockPosition]
+SelectProfile -down-> Inspection : NextStep [IsAlreadyReferenced && \nIsInspectionSelected && \nProfileSelected && \nPcbFrameInLockPosition]
+SelectProfile -down-> AdjustPcbForSolder : NextStep [IsAlreadyReferenced && \nIsSolderSelected && \nProfileSelected && \nExtendedHeatersActive]
+SelectProfile -down-> AdjustCrosshairForSolder : NextStep [IsAlreadyReferenced && \nIsSolderSelected && \nProfileSelected && \nPcbFrameInLockPosition]
+SelectProfile -down-> InspectionAfterSolder : NextStep [IsAlreadyReferenced && \nIsInspectionAfterSolderSelected && \nProfileSelected && \nPcbFrameInLockPosition]
+SelectProfile -down-> Reference : NextStep [ProfileSelected]
+SelectProfile -down-> InsertScavengingPipette : NextStep [ScavengingSelected && \nProfileSelected && \nIsAlreadyReferenced]
+SelectProfile -up-> Undefined : Logout
+
+Reference -down-> CanceledWorkflow : CancelRework
+Reference -down-> ProvideComponent : NextStep [IsReferenceFinished && \nIsCyclicWorkflowMode && \nPcbFrameInLockPosition]
+Reference -down-> AdjustPcb : NextStep [IsReferenceFinished && \nExtendedHeatersActive]
+Reference -down-> PrepareScavenging : NextStep [IsReferenceFinished && \nScavengerIsActive && \nScavengingSelected]
+Reference -down-> AdjustCrosshair : NextStep [IsReferenceFinished && \nIsDesolderSelected && \nPcbFrameInLockPosition]
+Reference -down-> InsertScavengingPipette : NextStep [IsReferenceFinished && \nScavengingSelected]
+
+AdjustPcb -down-> CanceledWorkflow : CancelRework
+AdjustPcb -down-> PrepareScavenging : NextStep [ScavengerIsActive && \nScavengingSelected]
+AdjustPcb -down-> AdjustCrosshair : NextStep [IsDesolderSelected]
+AdjustPcb -down-> FinishRework : NextStep
+
+InsertScavengingPipette -down-> Desolder : NextStep [InsertScavengingPipetteFinished]
+InsertScavengingPipette -down-> CanceledWorkflow : CancelRework
+
+Desolder -down-> ScavengingElement : NextStep [ScavengerIsActive && \nScavengingSelected && \nIsDesolderFinished]
+Desolder -down-> CleanBoard : NextStep [IsDesolderFinished]
+Desolder -down-> AdjustCrosshair : PreviousStep
+Desolder -down-> CanceledWorkflow : CancelRework
+
+ScavengingElement -down-> FinishedScavenging : NextStep [ScavengingElementFinished]
+ScavengingElement -down-> CanceledWorkflow : CancelRework
+
+FinishedScavenging -down-> MoveHeatingheadToTray : NextStep [ScavengingFinished]
+FinishedScavenging -down-> CanceledWorkflow : CancelRework
+
+MoveHeatingheadToTray -down-> FinishRework : NextStep [IsHeatingHeadDriveFinished]
+MoveHeatingheadToTray -down-> CanceledWorkflow : CancelRework
+
+FinishRework -up-> Reference : NextStep
+FinishRework -up-> Reference : RedoRework
+FinishRework -up-> SelectProfile : CancelRework
+
+CanceledWorkflow -up-> Undefined : Logout
+CanceledWorkflow -up-> Reference : RedoRework
+CanceledWorkflow -up-> SelectProfile : CancelRework
+
+@enduml
