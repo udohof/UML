@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StateMachineDefinitions>
+  <StateMachine name="StateMachineReworkHR600Base">
+    <State name='Reference'>
+      <Action name='NextStep' nextState='ProvideComponent'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsCyclicWorkflowMode' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='AdjustPcb'>
+        <Condition name='IsReferenceFinished' />       
+        <Condition name='ExtendedHeatersActive' />
+      </Action>      
+      <Action name='NextStep' nextState='PrepareScavenging'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='ScavengerIsActive' />
+        <Condition name='ScavengingSelected' />
+      </Action>
+      <Action name='NextStep' nextState='AdjustCrosshair'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsDesolderSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='PreparePickUpFromTray'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsBigComponentSelected' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareProvideComponent'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='Inspection'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsInspectionSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='AdjustPcbForSolder'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsSolderSelected' />
+        <Condition name='ExtendedHeatersActive' />
+      </Action>
+      <Action name='NextStep' nextState='AdjustCrosshairForSolder'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsSolderSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='InspectionAfterSolder'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsInspectionAfterSolderSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='InsertScavengingPipette'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='ScavengingSelected' />
+      </Action>
+    </State>
+  </StateMachine>
+</StateMachineDefinitions>

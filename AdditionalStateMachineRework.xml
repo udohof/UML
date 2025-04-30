@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file contains all elements that are in ReworkStateMachine.xml but missing from ShortedReworkStateMachine.xml -->
+<StateMachineDefinitions>
+  <StateMachine name="StateMachineReworkHR600Base">
+    
+    <!-- States present in ReworkStateMachine.xml but missing in ShortedReworkStateMachine.xml -->
+    
+    <State name='PcbVerification'>
+      <Action name='StartMesProzess' nextState='VerifyPcb'>
+        <Condition name='IsPcbVerificationFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'/>
+    </State>
+
+    <State name='VerifyPcb'>
+      <Action name='NextStep' nextState='Reference'>
+        <Condition name='IsVerifyPcbFinished' />
+      </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+      <Action name='CancelRework' nextState='CanceledWorkflow'/>
+    </State>
+    
+    <State name='PrepareProvidePrintedComponent'>
+      <Action name='NextStep' nextState='ProvidePrintedComponent' />
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <State name='ProvidePrintedComponent'>
+      <Action name='NextStep' nextState='PinDetection'>
+        <Condition name='IsProvidePrintedComponentFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <State name='PrepareDipComponent'>
+      <Action name='NextStep' nextState='ProvideComponent'>
+        <Condition name='IsBigComponentNotSelected' />
+      </Action>
+      <Action name='NextStep' nextState='DipComponent'>
+        <Condition name='IsBigComponentSelected' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+    
+    <State name='ChangePipetteBeforePipetteDip'>
+      <Action name='NextStep' nextState='SelectContactSurfaces'>
+        <Condition name='IsChangePipetteBeforePipetteDipFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+    
+    <State name='SelectContactSurfaces'>
+      <Action name='NextStep' nextState='ApplySolderPasteOnContactSurface'>
+        <Condition name='IsSelectContactSurfacesFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+    
+    <State name='ApplySolderPasteOnContactSurface'>
+      <Action name='NextStep' nextState='InspectingApplySolderPasteOnContactSurface'>
+        <Condition name='IsApplySolderPasteOnContactSurfaceFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+    
+    <State name='InspectingApplySolderPasteOnContactSurface'>
+      <Action name='NextStep' nextState='ApplySolderPasteOnContactSurface'>
+        <Condition name='IsRedoSelectContactSurfacesFinished' />
+      </Action>
+      <Action name='NextStep' nextState='ChangePipetteAfterPipetteDip'>
+        <Condition name='IsInspectingApplySolderPasteOnContactSurfaceFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+    
+    <State name='ChangePipetteAfterPipetteDip'>
+      <Action name='NextStep' nextState='PrepareTapeFeederComponent'>
+        <Condition name='IsChangePipetteAfterPipetteDipFinished' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+    
+    <State name='PrepareTapeFeederComponent'>
+      <Action name='NextStep' nextState='TapeFeederComponent'>
+        <Condition name='IsPrepareTapefeederFinished' />
+        <Condition name='IsTapeFeederComponentSelected' />
+      </Action>
+      <Action name='NextStep' nextState='TapeFeederComponent'>
+        <Condition name='IsPrepareTapefeederFinished' />
+        <Condition name='IsPinTransferSelected' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+    </State>
+
+    <State name='TapeFeederComponent'>
+      <Action name='NextStep' nextState='PickupTapeFeederComponent'>
+        <Condition name='IsTapeFeederComponentFinished' />
+        <Condition name='IsTapeFeederComponentSelected' />
+      </Action>
+      <Action name='NextStep' nextState='PickupTapeFeederComponent'>
+        <Condition name='IsTapeFeederComponentFinished' />
+        <Condition name='IsPinTransferSelected' />
+      </Action>
+      <Action name='NextStep' nextState='TapeFeederComponent'>
+        <Condition name='IsPrepareTapefeederFinished' />
+        <Condition name='IsPinTransferSelected' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+    </State>
+
+    <State name='PickupTapeFeederComponent'>
+      <Action name='NextStep' nextState='PinDetection'>
+        <Condition name='IsPickupTapeFeederComponentFinished' />
+        <Condition name='IsTapeFeederComponentSelected' />
+      </Action>
+      <Action name='NextStep' nextState='PinDetection'>
+        <Condition name='IsPickupTapeFeederComponentFinished' />
+        <Condition name='IsPinTransferSelected' />
+      </Action>
+      <Action name='NextStep' nextState='TapeFeederComponent'>
+        <Condition name='IsPrepareTapefeederFinished' />
+        <Condition name='IsPinTransferSelected' />
+      </Action>
+      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
+    </State>
+    
+    <State name='Delegate'>
+      <Action name='NextStep' nextState='AdjustCrosshair'>
+        <Condition name='IsLastStepDesolder' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareProvidePrintedComponent'>
+        <Condition name='IsLastStepPlacement' />
+        <Condition name='IsPrintComponentSelected'/>
+      </Action>
+      <Action name='NextStep' nextState='ChangePipetteBeforePipetteDip'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsPinTransferSelected' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareTapeFeederComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsTapeFeederComponentSelected' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareProvideComponent'>
+        <Condition name='IsLastStepPlacement' />
+      </Action>
+      <Action name='NextStep' nextState='Inspection'>
+        <Condition name='IsLastStepInspection' />
+      </Action>
+      <Action name='NextStep' nextState='AdjustCrosshairForSolder'>
+        <Condition name='IsLastStepSolder' />
+      </Action>
+      <Action name='NextStep' nextState='InspectionAfterSolder'>
+        <Condition name='IsLastStepInspectionAfterSolder' />
+      </Action>
+      <Action name='NextStep' nextState='SelectProfile'> </Action>
+      <Action name='NextStep' nextState='VerifyPcb' />
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </State>
+
+    <!-- Additional Action elements in Undefined state -->
+    <AdditionalActions state='Undefined'>
+      <Action name='StartMesProzess' nextState='PcbVerification'/>
+    </AdditionalActions>
+
+    <!-- Additional Action elements in SelectProfile state -->
+    <AdditionalActions state='SelectProfile'>
+      <Action name='NextStep' nextState='PrepareDipComponent'>
+        <Condition name='IsAlreadyReferenced' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsDipComponentSelected' />
+        <Condition name='ProfileSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareProvidePrintedComponent'>
+        <Condition name='IsAlreadyReferenced' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsPrintComponentSelected' />
+        <Condition name='ProfileSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='ChangePipetteBeforePipetteDip'>
+        <Condition name='IsAlreadyReferenced' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsPinTransferSelected' />
+        <Condition name='ProfileSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareTapeFeederComponent'>
+        <Condition name='IsAlreadyReferenced' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsTapeFeederComponentSelected' />
+        <Condition name='ProfileSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb'>
+        <Condition name='IsPcbVerificationFinished' />
+      </Action>
+    </AdditionalActions>
+    
+    <!-- Additional Action elements in Reference state -->
+    <AdditionalActions state='Reference'>
+      <Action name='NextStep' nextState='PrepareProvidePrintedComponent'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsPrintComponentSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareDipComponent'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsDipComponentSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='ChangePipetteBeforePipetteDip'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsPinTransferSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareTapeFeederComponent'>
+        <Condition name='IsReferenceFinished' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsTapeFeederComponentSelected' />
+        <Condition name='PcbFrameInLockPosition' />
+      </Action>
+      <Action name='NextStep' nextState='VerifyPcb' />
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </AdditionalActions>
+
+    <!-- Additional StartMesProzess actions -->
+    <AdditionalActions state='AdjustPcb'>
+      <Action name='NextStep' nextState='PrepareProvidePrintedComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsPrintComponentSelected' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareDipComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsDipComponentSelected' />
+      </Action>
+      <Action name='NextStep' nextState='ChangePipetteBeforePipetteDip'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsPinTransferSelected' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareTapeFeederComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsTapeFeederComponentSelected' />
+      </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </AdditionalActions>
+    
+    <!-- Additional MES process actions -->
+    <AdditionalMesActions>
+      <!-- Most states contain this additional action -->
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </AdditionalMesActions>
+    
+    <!-- Additional elements in Clean Board state -->
+    <AdditionalActions state='CleanBoard'>
+      <Action name='NextStep' nextState='PrepareProvidePrintedComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsPrintComponentSelected' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareDipComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsDipComponentSelected' />
+      </Action>
+      <Action name='NextStep' nextState='ChangePipetteBeforePipetteDip'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsPinTransferSelected' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareTapeFeederComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsTapeFeederComponentSelected' />
+      </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </AdditionalActions>
+
+    <!-- Additional elements in CanceledWorkflow state -->
+    <AdditionalActions state='CanceledWorkflow'>
+      <Action name='RedoLastStep' nextState='Delegate'/>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </AdditionalActions>
+
+    <!-- Additional elements in MoveHeatingheadToTray state -->
+    <AdditionalActions state='MoveHeatingheadToTray'>
+      <Action name='NextStep' nextState='PrepareProvidePrintedComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsPrintComponentSelected' />
+        <Condition name='IsHeatingHeadDriveFinished' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareDipComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsDipComponentSelected' />
+        <Condition name='IsHeatingHeadDriveFinished' />
+      </Action>
+      <Action name='StartMesProzess' nextState='VerifyPcb' />
+    </AdditionalActions>
+    
+    <!-- Additional elements in FinishedScavenging state -->
+    <AdditionalActions state='FinishedScavenging'>
+      <Action name='NextStep' nextState='PrepareProvidePrintedComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsPrintComponentSelected' />
+        <Condition name='ScavengerOnlySelected' />
+        <Condition name='ScavengingFinished' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareDipComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsDipComponentSelected' />
+        <Condition name='ScavengerOnlySelected' />
+        <Condition name='ScavengingFinished' />
+      </Action>
+    </AdditionalActions>
+
+  </StateMachine>
+</StateMachineDefinitions>

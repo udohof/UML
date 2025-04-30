@@ -128,7 +128,6 @@
         <Condition name='IsInspectionAfterSolderSelected' />
         <Condition name='PcbFrameInLockPosition' />
       </Action>
-      <Action name='CancelRework' nextState='CanceledWorkflow'/>
       <Action name='NextStep' nextState='InsertScavengingPipette'>
         <Condition name='IsReferenceFinished' />
         <Condition name='ScavengingSelected' />
@@ -160,14 +159,12 @@
         <Condition name='IsInspectionAfterSolderSelected' />
       </Action>
       <Action name='NextStep' nextState='FinishRework'/>
-      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
     </State>  
 
     <State name='AdjustCrosshair'>
       <Action name='NextStep' nextState='AdjustTeSensor'>
         <Condition name='AdjustDriveFinished' />
       </Action>
-      <Action name='CancelRework' nextState='CanceledWorkflow'/>
     </State>
 
     <State name='AdjustTeSensor'>
@@ -181,14 +178,12 @@
         <Condition name='IsDesolderSelected' />
       </Action>
       <Action name='NextStep' nextState='FinishRework'/>
-      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
     </State>
 
     <State name='InsertScavengingPipette'>
       <Action name='NextStep' nextState='Desolder'>
         <Condition name='InsertScavengingPipetteFinished' />
       </Action>
-      <Action name='CancelRework' nextState='CanceledWorkflow'/>
     </State>
 
     <State name='Desolder'>
@@ -201,7 +196,6 @@
         <Condition name='IsDesolderFinished' />
       </Action>
       <Action name='PreviousStep' nextState='AdjustCrosshair'/>
-      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
     </State>
 
     <State name='CleanBoard'>
@@ -226,7 +220,6 @@
         <Condition name='IsInspectionAfterSolderSelected' />
       </Action>
       <Action name='NextStep' nextState='FinishRework'></Action>
-      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
     </State>
 
     <State name='ProvideComponent'>
@@ -237,21 +230,18 @@
       <Action name='NextStep' nextState='PinDetection'>
         <Condition name='IsProvideComponentFinished' />
       </Action>
-      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
     </State>
 
     <State name='DipComponent'>
       <Action name='NextStep' nextState='PinDetection'>
         <Condition name='IsDipComponentFinished' />
       </Action>
-      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
     </State>
 
     <State name='PreparePickUpFromTray'>
       <Action name='NextStep' nextState='PickUpFromTray'>
         <Condition name='IsPreparePickUpFromTrayFinished' />
       </Action>    
-      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
     </State>
 
     <State name='PickUpFromTray'>
@@ -263,8 +253,6 @@
       <Action name='NextStep' nextState='PreparePickUpFromTray'>
         <Condition name='IsPickUpFromTrayFinished' />
         <Condition name='IsBigComponentSelected' />
-      </Action>
-      <Action name='CancelRework' nextState='CanceledWorkflow'>         
       </Action>
     </State>
 
@@ -279,28 +267,24 @@
       <Action name='NextStep' nextState='AdjustCrosshairAfterProvideComponent'>
         <Condition name='IsPinDetectionFinished' />
       </Action>
-      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
     </State>
 
     <State name='AdjustCrosshairBeforeProvideComponent'>
       <Action name='NextStep' nextState='FindBestMatch'>
         <Condition name='IsAdjustDriveBeforeProvideFinished' />
       </Action>
-      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
     </State>
 
     <State name='AdjustCrosshairAfterProvideComponent'>
       <Action name='NextStep' nextState='FindBestMatch'>
         <Condition name='IsAdjustDriveAfterProvideFinished' />
       </Action>
-      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
     </State>
 
     <State name='FindBestMatch'>
       <Action name='NextStep' nextState='AdjustBestMatch'>
         <Condition name='IsFindBestMatchFinished'/>
       </Action>
-      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
     </State>
 
     <State name='AdjustBestMatch'>
@@ -310,7 +294,6 @@
       <Action name='NextStep' nextState='PlaceComponent'>
         <Condition name='IsAdjustDriveAfterProvideFinished'/>
       </Action>
-      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
     </State>
 
     <State name='PlaceComponent'>
@@ -338,7 +321,6 @@
       <Action name='NextStep' nextState='FinishRework'>
         <Condition name='IsPlaceComponentFinished' />
       </Action>
-      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
     </State>
 
     <State name='Inspection'>
@@ -362,15 +344,12 @@
         <Condition name='IsInspectionAfterSolderSelected' />
       </Action>
       <Action name='NextStep' nextState='FinishRework' />
-      <Action name='CancelRework' nextState='CanceledWorkflow'/>
     </State>
 
     <State name='AdjustPcbForSolder'>
       <Action name='NextStep' nextState='AdjustCrosshairForSolder'>
         <Condition name='IsSolderSelected' />
       </Action>
-      <Action name='CancelRework' nextState='CanceledWorkflow'/>
-
       <Action name='StartMesProzess' nextState='VerifyPcb' />
     </State>
 
@@ -378,7 +357,6 @@
       <Action name='NextStep' nextState='AdjustTeSensorForSolder'>
         <Condition name='IsAdjustDriveForSolderFinished' />
       </Action>
-      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
     </State>
 
     <State name='AdjustTeSensorForSolder'>
@@ -391,7 +369,6 @@
       <Action name='NextStep' nextState='FinishRework'>
         <Condition name='IsSolderingFinished' />
       </Action>
-      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
     </State>
 
     <State name='Solder'>
@@ -402,12 +379,10 @@
       <Action name='NextStep' nextState='FinishRework'>
         <Condition name='IsSolderingFinished' />
       </Action>
-      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
     </State>
 
     <State name='InspectionAfterSolder'>
       <Action name='NextStep' nextState='FinishRework' />
-      <Action name='CancelRework' nextState='CanceledWorkflow'> </Action>
     </State> 
 
     <State name='PrepareScavenging'>
@@ -416,15 +391,11 @@
         <Condition name='ScavengingSelected' />
         <Condition name='PrepareScavengingFinished' />
       </Action>
-      <Action name='CancelRework' nextState='CanceledWorkflow'>
-      </Action>
     </State>
 
     <State name='ScavengingElement'>
       <Action name ='NextStep' nextState='FinishedScavenging'>
         <Condition name='ScavengingElementFinished'/>
-      </Action>
-      <Action name='CancelRework' nextState='CanceledWorkflow'>
       </Action>
     </State>
 
@@ -467,8 +438,6 @@
       <Action name ='NextStep' nextState='MoveHeatingheadToTray'>
         <Condition name='ScavengingFinished' />
       </Action>
-      <Action name='CancelRework' nextState='CanceledWorkflow'>
-      </Action>
     </State>
 
     <State name='MoveHeatingheadToTray'>
@@ -500,18 +469,11 @@
       <Action name='NextStep' nextState='FinishRework'>
       <Condition name='IsHeatingHeadDriveFinished' />
       </Action>
-      <Action name='CancelRework' nextState='CanceledWorkflow' />
     </State>
 
     <State name='FinishRework'>
       <Action name='NextStep' nextState='Reference' />
       <Action name='RedoRework' nextState='Reference'/>
-      <Action name='CancelRework' nextState='SelectProfile'> </Action>
-    </State>
-
-    <State name='CanceledWorkflow'>
-      <Action name='Logout' nextState='Undefined'/>
-      <Action name='RedoRework' nextState='Reference'> </Action>
       <Action name='CancelRework' nextState='SelectProfile'> </Action>
     </State>
 

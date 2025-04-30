@@ -1,0 +1,49 @@
+@startuml
+title Reference State Transitions
+
+skinparam state {
+  BackgroundColor LightBlue
+  BorderColor DarkBlue
+  ArrowColor Navy
+  FontColor Black
+}
+
+skinparam ArrowThickness 1.2
+skinparam DefaultFontSize 12
+
+[*] --> Reference
+
+state Reference {
+  [*] --> ProcessReference
+  ProcessReference : Reference point calculation in progress
+}
+
+Reference --> ProvideComponent : NextStep\n[IsReferenceFinished\nIsCyclicWorkflowMode\nPcbFrameInLockPosition]
+
+Reference --> AdjustPcb : NextStep\n[IsReferenceFinished\nExtendedHeatersActive]
+
+Reference --> PrepareScavenging : NextStep\n[IsReferenceFinished\nScavengerIsActive\nScavengingSelected]
+
+Reference --> AdjustCrosshair : NextStep\n[IsReferenceFinished\nIsDesolderSelected\nPcbFrameInLockPosition]
+
+Reference --> PreparePickUpFromTray : NextStep\n[IsReferenceFinished\nIsBigComponentSelected\nIsPlacementSelected\nPcbFrameInLockPosition]
+
+Reference --> PrepareProvideComponent : NextStep\n[IsReferenceFinished\nIsPlacementSelected\nPcbFrameInLockPosition]
+
+Reference --> Inspection : NextStep\n[IsReferenceFinished\nIsInspectionSelected\nPcbFrameInLockPosition]
+
+Reference --> AdjustPcbForSolder : NextStep\n[IsReferenceFinished\nIsSolderSelected\nExtendedHeatersActive]
+
+Reference --> AdjustCrosshairForSolder : NextStep\n[IsReferenceFinished\nIsSolderSelected\nPcbFrameInLockPosition]
+
+Reference --> InspectionAfterSolder : NextStep\n[IsReferenceFinished\nIsInspectionAfterSolderSelected\nPcbFrameInLockPosition]
+
+Reference --> InsertScavengingPipette : NextStep\n[IsReferenceFinished\nScavengingSelected]
+
+note bottom of Reference
+  The Reference state is the central state in the rework workflow.
+  All possible paths branch from here after the reference points are established.
+  The common condition IsReferenceFinished indicates successful reference completion.
+end note
+
+@enduml

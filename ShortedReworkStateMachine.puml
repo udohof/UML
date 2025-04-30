@@ -4,26 +4,14 @@
 state Undefined {
     [*] --> Undefined
     Undefined --> SelectProfile : NextStep
-    Undefined --> PcbVerification : StartMesProzess
-}
-
-state PcbVerification {
-    PcbVerification --> VerifyPcb : StartMesProzess\n[IsPcbVerificationFinished]
-    PcbVerification --> CanceledWorkflow : CancelRework
-}
-
-state VerifyPcb {
-    VerifyPcb --> Reference : NextStep\n[IsVerifyPcbFinished]
-    VerifyPcb --> VerifyPcb : StartMesProzess
-    VerifyPcb --> CanceledWorkflow : CancelRework
 }
 
 state SelectProfile {
+    SelectProfile --> Undefined : Logout
     SelectProfile --> AdjustPcb : NextStep\n[IsAlreadyReferenced\nProfileSelected\nExtendedHeatersActive]
     SelectProfile --> PrepareScavenging : NextStep\n[IsAlreadyReferenced\nScavengerIsActive\nScavengingSelected]
     SelectProfile --> AdjustCrosshair : NextStep\n[IsAlreadyReferenced\nIsDesolderSelected\nProfileSelected\nPcbFrameInLockPosition]
     SelectProfile --> PreparePickUpFromTray : NextStep\n[IsAlreadyReferenced\nIsBigComponentSelected\nIsPlacementSelected\nPcbFrameInLockPosition\nProfileSelected]
-    SelectProfile --> ChangePipetteBeforePipetteDip : NextStep\n[IsAlreadyReferenced\nIsPlacementSelected\nIsPinTransferSelected\nProfileSelected\nPcbFrameInLockPosition]
     SelectProfile --> ProvideComponent : NextStep\n[IsAlreadyReferenced\nIsCyclicWorkflowMode\nPcbFrameInLockPosition]
     SelectProfile --> PrepareProvideComponent : NextStep\n[IsAlreadyReferenced\nIsPlacementSelected\nProfileSelected\nPcbFrameInLockPosition]
     SelectProfile --> Inspection : NextStep\n[IsAlreadyReferenced\nIsInspectionSelected\nProfileSelected\nPcbFrameInLockPosition]
@@ -31,7 +19,6 @@ state SelectProfile {
     SelectProfile --> AdjustCrosshairForSolder : NextStep\n[IsAlreadyReferenced\nIsSolderSelected\nProfileSelected\nPcbFrameInLockPosition]
     SelectProfile --> InspectionAfterSolder : NextStep\n[IsAlreadyReferenced\nIsInspectionAfterSolderSelected\nProfileSelected\nPcbFrameInLockPosition]
     SelectProfile --> Reference : NextStep\n[ProfileSelected]
-    SelectProfile --> VerifyPcb : StartMesProzess\n[IsPcbVerificationFinished]
     SelectProfile --> InsertScavengingPipette : NextStep\n[ScavengingSelected\nProfileSelected\nIsAlreadyReferenced]
 }
 
@@ -41,13 +28,11 @@ state Reference {
     Reference --> PrepareScavenging : NextStep\n[IsReferenceFinished\nScavengerIsActive\nScavengingSelected]
     Reference --> AdjustCrosshair : NextStep\n[IsReferenceFinished\nIsDesolderSelected\nPcbFrameInLockPosition]
     Reference --> PreparePickUpFromTray : NextStep\n[IsReferenceFinished\nIsBigComponentSelected\nIsPlacementSelected\nPcbFrameInLockPosition]
-    Reference --> ChangePipetteBeforePipetteDip : NextStep\n[IsReferenceFinished\nIsPlacementSelected\nIsPinTransferSelected\nPcbFrameInLockPosition]
     Reference --> PrepareProvideComponent : NextStep\n[IsReferenceFinished\nIsPlacementSelected\nPcbFrameInLockPosition]
     Reference --> Inspection : NextStep\n[IsReferenceFinished\nIsInspectionSelected\nPcbFrameInLockPosition]
     Reference --> AdjustPcbForSolder : NextStep\n[IsReferenceFinished\nIsSolderSelected\nExtendedHeatersActive]
     Reference --> AdjustCrosshairForSolder : NextStep\n[IsReferenceFinished\nIsSolderSelected\nPcbFrameInLockPosition]
     Reference --> InspectionAfterSolder : NextStep\n[IsReferenceFinished\nIsInspectionAfterSolderSelected\nPcbFrameInLockPosition]
-    Reference --> VerifyPcb : NextStep
     Reference --> CanceledWorkflow : CancelRework
     Reference --> InsertScavengingPipette : NextStep\n[IsReferenceFinished\nScavengingSelected]
 }
@@ -56,33 +41,78 @@ state AdjustPcb {
     AdjustPcb --> PrepareScavenging : NextStep\n[ScavengerIsActive\nScavengingSelected]
     AdjustPcb --> AdjustCrosshair : NextStep\n[IsDesolderSelected]
     AdjustPcb --> PreparePickUpFromTray : NextStep\n[IsBigComponentSelected\nIsPlacementSelected]
-    AdjustPcb --> ChangePipetteBeforePipetteDip : NextStep\n[IsPlacementSelected\nIsPinTransferSelected]
     AdjustPcb --> PrepareProvideComponent : NextStep\n[IsPlacementSelected]
     AdjustPcb --> Inspection : NextStep\n[IsInspectionSelected]
     AdjustPcb --> AdjustCrosshairForSolder : NextStep\n[IsSolderSelected]
     AdjustPcb --> InspectionAfterSolder : NextStep\n[IsInspectionAfterSolderSelected]
     AdjustPcb --> FinishRework : NextStep
     AdjustPcb --> CanceledWorkflow : CancelRework
-    AdjustPcb --> VerifyPcb : StartMesProzess
+}
+
+state AdjustCrosshair {
+    AdjustCrosshair --> AdjustTeSensor : NextStep\n[AdjustDriveFinished]
+    AdjustCrosshair --> CanceledWorkflow : CancelRework
+}
+
+state AdjustTeSensor {
+    AdjustTeSensor --> InsertScavengingPipette : NextStep\n[ScavengerIsActive\nScavengingSelected\nPrepareScavengingFinished]
+    AdjustTeSensor --> Desolder : NextStep\n[AdjustDriveFinished\nIsDesolderSelected]
+    AdjustTeSensor --> FinishRework : NextStep
+    AdjustTeSensor --> CanceledWorkflow : CancelRework
+}
+
+state InsertScavengingPipette {
+    InsertScavengingPipette --> Desolder : NextStep\n[InsertScavengingPipetteFinished]
+    InsertScavengingPipette --> CanceledWorkflow : CancelRework
+}
+
+state Desolder {
+    Desolder --> ScavengingElement : NextStep\n[ScavengerIsActive\nScavengingSelected\nIsDesolderFinished]
+    Desolder --> CleanBoard : NextStep\n[IsDesolderFinished]
+    Desolder --> AdjustCrosshair : PreviousStep
+    Desolder --> CanceledWorkflow : CancelRework
+}
+
+state ScavengingElement {
+    ScavengingElement --> FinishedScavenging : NextStep\n[ScavengingElementFinished]
+    ScavengingElement --> CanceledWorkflow : CancelRework
+}
+
+state FinishedScavenging {
+    FinishedScavenging --> PrepareProvideComponent : NextStep\n[IsPlacementSelected\nScavengerOnlySelected\nScavengingFinished]
+    FinishedScavenging --> PickUpFromTray : NextStep\n[IsPlacementSelected\nIsBigComponentSelected\nScavengerOnlySelected\nScavengingFinished]
+    FinishedScavenging --> Inspection : NextStep\n[IsInspectionSelected\nScavengerOnlySelected\nScavengingFinished]
+    FinishedScavenging --> AdjustCrosshairForSolder : NextStep\n[IsSolderSelected\nScavengerOnlySelected\nScavengingFinished]
+    FinishedScavenging --> InspectionAfterSolder : NextStep\n[IsInspectionAfterSolderSelected\nScavengerOnlySelected\nScavengingFinished]
+    FinishedScavenging --> FinishRework : NextStep\n[ScavengerOnlySelected\nScavengingFinished]
+    FinishedScavenging --> MoveHeatingheadToTray : NextStep\n[ScavengingFinished]
+    FinishedScavenging --> CanceledWorkflow : CancelRework
+}
+
+state CleanBoard {
+    CleanBoard --> PreparePickUpFromTray : NextStep\n[IsBigComponentSelected\nIsPlacementSelected]
+    CleanBoard --> PrepareProvideComponent : NextStep\n[IsPlacementSelected]
+    CleanBoard --> Inspection : NextStep\n[IsInspectionSelected]
+    CleanBoard --> AdjustCrosshairForSolder : NextStep\n[IsSolderSelected]
+    CleanBoard --> InspectionAfterSolder : NextStep\n[IsInspectionAfterSolderSelected]
+    CleanBoard --> FinishRework : NextStep
+    CleanBoard --> CanceledWorkflow : CancelRework
 }
 
 state ProvideComponent {
     ProvideComponent --> PinDetection : NextStep\n[IsProvideComponentFinished\nIsDipComponentSelected]
     ProvideComponent --> PinDetection : NextStep\n[IsProvideComponentFinished]
     ProvideComponent --> CanceledWorkflow : CancelRework
-    ProvideComponent --> VerifyPcb : StartMesProzess
 }
 
 state DipComponent {
     DipComponent --> PinDetection : NextStep\n[IsDipComponentFinished]
     DipComponent --> CanceledWorkflow : CancelRework
-    DipComponent --> VerifyPcb : StartMesProzess
 }
 
 state PreparePickUpFromTray {
     PreparePickUpFromTray --> PickUpFromTray : NextStep\n[IsPreparePickUpFromTrayFinished]
     PreparePickUpFromTray --> CanceledWorkflow : CancelRework
-    PreparePickUpFromTray --> VerifyPcb : StartMesProzess
 }
 
 state PickUpFromTray {
@@ -91,19 +121,108 @@ state PickUpFromTray {
     PickUpFromTray --> CanceledWorkflow : CancelRework
 }
 
+state PinDetection {
+    PinDetection --> FindBestMatch : NextStep\n[IsPinDetectionFinished\nIsDesolderSelected]
+    PinDetection --> FindBestMatch : NextStep\n[IsCyclicWorkflowMode]
+    PinDetection --> AdjustCrosshairAfterProvideComponent : NextStep\n[IsPinDetectionFinished]
+    PinDetection --> CanceledWorkflow : CancelRework
+}
+
+state AdjustCrosshairBeforeProvideComponent {
+    AdjustCrosshairBeforeProvideComponent --> FindBestMatch : NextStep\n[IsAdjustDriveBeforeProvideFinished]
+    AdjustCrosshairBeforeProvideComponent --> CanceledWorkflow : CancelRework
+}
+
+state AdjustCrosshairAfterProvideComponent {
+    AdjustCrosshairAfterProvideComponent --> FindBestMatch : NextStep\n[IsAdjustDriveAfterProvideFinished]
+    AdjustCrosshairAfterProvideComponent --> CanceledWorkflow : CancelRework
+}
+
+state FindBestMatch {
+    FindBestMatch --> AdjustBestMatch : NextStep\n[IsFindBestMatchFinished]
+    FindBestMatch --> CanceledWorkflow : CancelRework
+}
+
+state AdjustBestMatch {
+    AdjustBestMatch --> PlaceComponent : NextStep\n[IsPinDetectionFinished]
+    AdjustBestMatch --> PlaceComponent : NextStep\n[IsAdjustDriveAfterProvideFinished]
+    AdjustBestMatch --> CanceledWorkflow : CancelRework
+}
+
+state PlaceComponent {
+    PlaceComponent --> ProvideComponent : NextStep\n[IsPlaceComponentFinished\nIsCyclicWorkflowMode]
+    PlaceComponent --> Inspection : NextStep\n[IsPlaceComponentFinished\nIsInspectionSelected]
+    PlaceComponent --> Solder : NextStep\n[IsPlaceComponentFinished\nIsSolderSelected\nIsDesolderSelected]
+    PlaceComponent --> AdjustTeSensorForSolder : NextStep\n[IsPlaceComponentFinished\nIsSolderSelected]
+    PlaceComponent --> InspectionAfterSolder : NextStep\n[IsPlaceComponentFinished\nIsInspectionAfterSolderSelected]
+    PlaceComponent --> FinishRework : NextStep\n[IsPlaceComponentFinished]
+    PlaceComponent --> CanceledWorkflow : CancelRework
+}
+
+state Inspection {
+    Inspection --> Solder : NextStep\n[IsSolderSelected\nIsDesolderSelected]
+    Inspection --> AdjustTeSensorForSolder : NextStep\n[IsSolderSelected\nIsPlacementSelected]
+    Inspection --> Solder : NextStep\n[IsSolderSelected\nIsPlacementSelected\nIsDesolderSelected]
+    Inspection --> AdjustCrosshairForSolder : NextStep\n[IsSolderSelected]
+    Inspection --> FinishRework : NextStep\n[IsInspectionAfterSolderSelected]
+    Inspection --> FinishRework : NextStep
+    Inspection --> CanceledWorkflow : CancelRework
+}
+
+state AdjustPcbForSolder {
+    AdjustPcbForSolder --> AdjustCrosshairForSolder : NextStep\n[IsSolderSelected]
+    AdjustPcbForSolder --> CanceledWorkflow : CancelRework
+    AdjustPcbForSolder --> VerifyPcb : StartMesProzess
+}
+
+state AdjustCrosshairForSolder {
+    AdjustCrosshairForSolder --> AdjustTeSensorForSolder : NextStep\n[IsAdjustDriveForSolderFinished]
+    AdjustCrosshairForSolder --> CanceledWorkflow : CancelRework
+}
+
+state AdjustTeSensorForSolder {
+    AdjustTeSensorForSolder --> Solder : NextStep\n[IsSolderSelected]
+    AdjustTeSensorForSolder --> InspectionAfterSolder : NextStep\n[IsInspectionAfterSolderSelected]
+    AdjustTeSensorForSolder --> FinishRework : NextStep\n[IsSolderingFinished]
+    AdjustTeSensorForSolder --> CanceledWorkflow : CancelRework
+}
+
+state Solder {
+    Solder --> InspectionAfterSolder : NextStep\n[IsSolderingFinished\nIsInspectionAfterSolderSelected]
+    Solder --> FinishRework : NextStep\n[IsSolderingFinished]
+    Solder --> CanceledWorkflow : CancelRework
+}
+
+state InspectionAfterSolder {
+    InspectionAfterSolder --> FinishRework : NextStep
+    InspectionAfterSolder --> CanceledWorkflow : CancelRework
+}
+
+state PrepareScavenging {
+    PrepareScavenging --> AdjustTeSensor : NextStep\n[ScavengerIsActive\nScavengingSelected\nPrepareScavengingFinished]
+    PrepareScavenging --> CanceledWorkflow : CancelRework
+}
+
+state MoveHeatingheadToTray {
+    MoveHeatingheadToTray --> PrepareProvideComponent : NextStep\n[IsPlacementSelected\nIsHeatingHeadDriveFinished]
+    MoveHeatingheadToTray --> PickUpFromTray : NextStep\n[IsPlacementSelected\nIsBigComponentSelected\nIsHeatingHeadDriveFinished]
+    MoveHeatingheadToTray --> Inspection : NextStep\n[IsInspectionSelected\nIsHeatingHeadDriveFinished]
+    MoveHeatingheadToTray --> AdjustCrosshairForSolder : NextStep\n[IsSolderSelected\nIsHeatingHeadDriveFinished]
+    MoveHeatingheadToTray --> InspectionAfterSolder : NextStep\n[IsInspectionAfterSolderSelected\nIsHeatingHeadDriveFinished]
+    MoveHeatingheadToTray --> FinishRework : NextStep\n[IsHeatingHeadDriveFinished]
+    MoveHeatingheadToTray --> CanceledWorkflow : CancelRework
+}
+
 state FinishRework {
     FinishRework --> Reference : NextStep
     FinishRework --> Reference : RedoRework
     FinishRework --> SelectProfile : CancelRework
-    FinishRework --> VerifyPcb : StartMesProzess
 }
 
 state CanceledWorkflow {
     CanceledWorkflow --> Undefined : Logout
-    CanceledWorkflow --> Delegate : RedoLastStep
     CanceledWorkflow --> Reference : RedoRework
     CanceledWorkflow --> SelectProfile : CancelRework
-    CanceledWorkflow --> VerifyPcb : StartMesProzess
 }
 
 @enduml
