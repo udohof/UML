@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StateMachineDefinitions>
+  <StateMachine name="SelectProfileStateMachine">
+    <State name='SelectProfile'>
+      <Action name='Logout' nextState='Undefined'/>
+    </State>
+  </StateMachine>
+</StateMachineDefinitions>

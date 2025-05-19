@@ -1,79 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <StateMachineDefinitions>
-  <StateMachine name="StateMachineReworkHR600Base">
-
-    <State name='Undefined'>
-      <Action name='Logout' nextState='Undefined'/>
-      <Action name='NextStep' nextState='SelectProfile' />
-    </State>
-
-    <State name='SelectProfile'>
-      <Action name='Logout' nextState='Undefined'/>
-      <Action name='NextStep' nextState='AdjustPcb'>
-        <Condition name='IsAlreadyReferenced' />
-        <Condition name='ProfileSelected' />
-        <Condition name='ExtendedHeatersActive' />
-      </Action>
-      <Action name='NextStep' nextState='PrepareScavenging'>
-        <Condition name='IsAlreadyReferenced' />
-        <Condition name='ScavengerIsActive' />
-        <Condition name='ScavengingSelected' />
-      </Action>
-      <Action name='NextStep' nextState='AdjustCrosshair'>
-        <Condition name='IsAlreadyReferenced' />
-        <Condition name='IsDesolderSelected' />
-        <Condition name='ProfileSelected' />
-        <Condition name='PcbFrameInLockPosition' />
-      </Action>
-      <Action name='NextStep' nextState='PreparePickUpFromTray'>
-        <Condition name='IsAlreadyReferenced' />
-        <Condition name='IsBigComponentSelected' />
-        <Condition name='IsPlacementSelected' />
-        <Condition name='PcbFrameInLockPosition' />
-        <Condition name='ProfileSelected' />
-      </Action>
-      <Action name='NextStep' nextState='ProvideComponent'>
-        <Condition name='IsAlreadyReferenced' />
-        <Condition name='IsCyclicWorkflowMode' />
-        <Condition name='PcbFrameInLockPosition' />
-      </Action>
-      <Action name='NextStep' nextState='PrepareProvideComponent'>
-        <Condition name='IsAlreadyReferenced' />
-        <Condition name='IsPlacementSelected' />
-        <Condition name='ProfileSelected' />
-        <Condition name='PcbFrameInLockPosition' />
-      </Action>
-      <Action name='NextStep' nextState='Inspection'>
-        <Condition name='IsAlreadyReferenced' />
-        <Condition name='IsInspectionSelected' />
-        <Condition name='ProfileSelected' />
-        <Condition name='PcbFrameInLockPosition' />
-      </Action>
-      <Action name='NextStep' nextState='AdjustPcbForSolder'>
-        <Condition name='IsAlreadyReferenced' />
-        <Condition name='IsSolderSelected' />
-        <Condition name='ProfileSelected' />
-        <Condition name='ExtendedHeatersActive' />
-      </Action>
-      <Action name='NextStep' nextState='AdjustCrosshairForSolder'>
-        <Condition name='IsAlreadyReferenced' />
-        <Condition name='IsSolderSelected' />
-        <Condition name='ProfileSelected' />
-        <Condition name='PcbFrameInLockPosition' />
-      </Action>
-      <Action name='NextStep' nextState='InspectionAfterSolder'>
-        <Condition name='IsAlreadyReferenced' />
-        <Condition name='IsInspectionAfterSolderSelected' />
-        <Condition name='ProfileSelected' />
-        <Condition name='PcbFrameInLockPosition' />
-      </Action>
-      <Action name='NextStep' nextState='InsertScavengingPipette'>
-        <Condition name='ScavengingSelected' />
-        <Condition name='ProfileSelected' />
-        <Condition name='IsAlreadyReferenced' />
-      </Action>
-    </State>
-
+  <StateMachine name="AdjustPcbStateMachine">
     <State name='AdjustPcb'>
       <Action name='NextStep' nextState='PrepareScavenging'>
         <Condition name='ScavengerIsActive' />
@@ -99,11 +26,13 @@
         <Condition name='IsInspectionAfterSolderSelected' />
       </Action>
       <Action name='NextStep' nextState='FinishRework'/>
-    </State>  
+    </State>
 
-    <State name='AdjustCrosshair'>
+    <State name='PrepareScavenging'>
       <Action name='NextStep' nextState='AdjustTeSensor'>
-        <Condition name='AdjustDriveFinished' />
+        <Condition name='ScavengerIsActive' />
+        <Condition name='ScavengingSelected' />
+        <Condition name='PrepareScavengingFinished' />
       </Action>
     </State>
 
@@ -138,38 +67,78 @@
       <Action name='PreviousStep' nextState='AdjustCrosshair'/>
     </State>
 
-    <State name='CleanBoard'>
-      <Action name='NextStep' nextState='PreparePickUpFromTray'>
-        <Condition name='IsBigComponentSelected' />
-        <Condition name='IsPlacementSelected' />
+    <State name='ScavengingElement'>
+      <Action name ='NextStep' nextState='FinishedScavenging'>
+        <Condition name='ScavengingElementFinished'/>
       </Action>
+    </State>
+
+    <State name='FinishedScavenging'>
       <Action name='NextStep' nextState='PrepareProvideComponent'>
         <Condition name='IsPlacementSelected' />
+        <Condition name='ScavengerOnlySelected' />
+        <Condition name='ScavengingFinished' />
       </Action>
-      <Action name='NextStep' nextState='PreparePickUpFromTray'>
+      <Action name='NextStep' nextState='PickUpFromTray'>
         <Condition name='IsPlacementSelected' />
         <Condition name='IsBigComponentSelected' />
-      </Action>      
+        <Condition name='ScavengerOnlySelected' />
+        <Condition name='ScavengingFinished' />
+      </Action>
       <Action name='NextStep' nextState='Inspection'>
         <Condition name='IsInspectionSelected' />
+        <Condition name='ScavengerOnlySelected' />
+        <Condition name='ScavengingFinished' />
       </Action>
       <Action name='NextStep' nextState='AdjustCrosshairForSolder'>
         <Condition name='IsSolderSelected' />
+        <Condition name='ScavengerOnlySelected' />
+        <Condition name='ScavengingFinished' />
       </Action>
       <Action name='NextStep' nextState='InspectionAfterSolder'>
         <Condition name='IsInspectionAfterSolderSelected' />
+        <Condition name='ScavengerOnlySelected' />
+        <Condition name='ScavengingFinished' />
       </Action>
-      <Action name='NextStep' nextState='FinishRework'></Action>
+      <Action name='NextStep' nextState='FinishRework'>
+        <Condition name='ScavengerOnlySelected' />
+        <Condition name='ScavengingFinished' />
+      </Action>
+      <Action name ='NextStep' nextState='MoveHeatingheadToTray'>
+        <Condition name='ScavengingFinished' />
+      </Action>
     </State>
 
-    <State name='PrepareProvideComponent'>
-      <Action name='NextStep' nextState='ProvideComponent' />
-
+    <State name='MoveHeatingheadToTray'>
+      <Action name='NextStep' nextState='PrepareProvideComponent'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsHeatingHeadDriveFinished' />
+      </Action>
+      <Action name='NextStep' nextState='PickUpFromTray'>
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsBigComponentSelected' />
+        <Condition name='IsHeatingHeadDriveFinished' />
+      </Action>
+      <Action name='NextStep' nextState='Inspection'>
+        <Condition name='IsInspectionSelected' />
+        <Condition name='IsHeatingHeadDriveFinished' />
+      </Action>
+      <Action name='NextStep' nextState='AdjustCrosshairForSolder'>
+        <Condition name='IsSolderSelected' />
+        <Condition name='IsHeatingHeadDriveFinished' />
+      </Action>
+      <Action name='NextStep' nextState='InspectionAfterSolder'>
+        <Condition name='IsInspectionAfterSolderSelected' />
+        <Condition name='IsHeatingHeadDriveFinished' />
+      </Action>
+      <Action name='NextStep' nextState='FinishRework'>
+        <Condition name='IsHeatingHeadDriveFinished' />
+      </Action>
     </State>
 
-    <State name='ProvideComponent'>
-      <Action name='NextStep' nextState='PinDetection'>
-        <Condition name='IsProvideComponentFinished' />
+    <State name='AdjustCrosshair'>
+      <Action name='NextStep' nextState='AdjustTeSensor'>
+        <Condition name='AdjustDriveFinished' />
       </Action>
     </State>
 
@@ -180,9 +149,24 @@
     </State>
 
     <State name='PickUpFromTray'>
+      <Action name='NextStep' nextState='PrepareProvideComponent'>
+        <Condition name='IsPickUpFromTrayFinished' />
+        <Condition name='IsPlacementSelected' />
+        <Condition name='IsBigComponentSelected' />
+      </Action>
       <Action name='NextStep' nextState='PinDetection'>
         <Condition name='IsPickUpFromTrayFinished' />
         <Condition name='IsBigComponentSelected' />
+      </Action>
+    </State>
+
+    <State name='PrepareProvideComponent'>
+      <Action name='NextStep' nextState='ProvideComponent' />
+    </State>
+
+    <State name='ProvideComponent'>
+      <Action name='NextStep' nextState='PinDetection'>
+        <Condition name='IsProvideComponentFinished' />
       </Action>
     </State>
 
@@ -247,6 +231,26 @@
       </Action>
     </State>
 
+    <State name='CleanBoard'>
+      <Action name='NextStep' nextState='PreparePickUpFromTray'>
+        <Condition name='IsBigComponentSelected' />
+        <Condition name='IsPlacementSelected' />
+      </Action>
+      <Action name='NextStep' nextState='PrepareProvideComponent'>
+        <Condition name='IsPlacementSelected' />
+      </Action>
+      <Action name='NextStep' nextState='Inspection'>
+        <Condition name='IsInspectionSelected' />
+      </Action>
+      <Action name='NextStep' nextState='AdjustCrosshairForSolder'>
+        <Condition name='IsSolderSelected' />
+      </Action>
+      <Action name='NextStep' nextState='InspectionAfterSolder'>
+        <Condition name='IsInspectionAfterSolderSelected' />
+      </Action>
+      <Action name='NextStep' nextState='FinishRework'></Action>
+    </State>
+
     <State name='Inspection'>
       <Action name='NextStep' nextState='Solder'>
         <Condition name='IsSolderSelected' />
@@ -268,12 +272,6 @@
         <Condition name='IsInspectionAfterSolderSelected' />
       </Action>
       <Action name='NextStep' nextState='FinishRework' />
-    </State>
-
-    <State name='AdjustPcbForSolder'>
-      <Action name='NextStep' nextState='AdjustCrosshairForSolder'>
-        <Condition name='IsSolderSelected' />
-      </Action>
     </State>
 
     <State name='AdjustCrosshairForSolder'>
@@ -306,89 +304,10 @@
 
     <State name='InspectionAfterSolder'>
       <Action name='NextStep' nextState='FinishRework' />
-    </State> 
-
-    <State name='PrepareScavenging'>
-      <Action name='NextStep' nextState='AdjustTeSensor'>
-        <Condition name='ScavengerIsActive' />
-        <Condition name='ScavengingSelected' />
-        <Condition name='PrepareScavengingFinished' />
-      </Action>
-    </State>
-
-    <State name='ScavengingElement'>
-      <Action name ='NextStep' nextState='FinishedScavenging'>
-        <Condition name='ScavengingElementFinished'/>
-      </Action>
-    </State>
-
-    <State name='FinishedScavenging'>
-      <Action name='NextStep' nextState='PickUpFromTray'>
-        <Condition name='IsPlacementSelected' />
-        <Condition name='IsBigComponentSelected' />
-        <Condition name='ScavengerOnlySelected' />
-        <Condition name='ScavengingFinished' />
-      </Action>
-      <Action name='NextStep' nextState='PrepareProvideComponent'>
-        <Condition name='IsPlacementSelected' />
-        <Condition name='ScavengerOnlySelected' />
-        <Condition name='ScavengingFinished' />
-      </Action>
-      <Action name='NextStep' nextState='Inspection'>
-        <Condition name='IsInspectionSelected' />
-        <Condition name='ScavengerOnlySelected' />
-        <Condition name='ScavengingFinished' />
-      </Action>
-      <Action name='NextStep' nextState='AdjustCrosshairForSolder'>
-        <Condition name='IsSolderSelected' />
-        <Condition name='ScavengerOnlySelected' />
-        <Condition name='ScavengingFinished' />
-      </Action>
-      <Action name='NextStep' nextState='InspectionAfterSolder'>
-        <Condition name='IsInspectionAfterSolderSelected' />
-        <Condition name='ScavengerOnlySelected' />
-        <Condition name='ScavengingFinished' />
-      </Action>
-      <Action name='NextStep' nextState='FinishRework'>
-        <Condition name='ScavengerOnlySelected' />
-        <Condition name='ScavengingFinished' />
-      </Action>
-      <Action name ='NextStep' nextState='MoveHeatingheadToTray'>
-        <Condition name='ScavengingFinished' />
-      </Action>
-    </State>
-
-    <State name='MoveHeatingheadToTray'>
-      <Action name='NextStep' nextState='PickUpFromTray'>
-        <Condition name='IsPlacementSelected' />
-        <Condition name='IsBigComponentSelected' />
-        <Condition name='IsHeatingHeadDriveFinished' />
-      </Action>
-      <Action name='NextStep' nextState='PrepareProvideComponent'>
-        <Condition name='IsPlacementSelected' />
-        <Condition name='IsHeatingHeadDriveFinished' />
-      </Action>
-      <Action name='NextStep' nextState='Inspection'>
-        <Condition name='IsInspectionSelected' />
-        <Condition name='IsHeatingHeadDriveFinished' />
-      </Action>
-      <Action name='NextStep' nextState='AdjustCrosshairForSolder'>
-        <Condition name='IsSolderSelected' />
-        <Condition name='IsHeatingHeadDriveFinished' />
-      </Action>
-      <Action name='NextStep' nextState='InspectionAfterSolder'>
-        <Condition name='IsInspectionAfterSolderSelected' />
-        <Condition name='IsHeatingHeadDriveFinished' />
-      </Action>
-      <Action name='NextStep' nextState='FinishRework'>
-      <Condition name='IsHeatingHeadDriveFinished' />
-      </Action>
     </State>
 
     <State name='FinishRework'>
-      <Action name='NextStep' nextState='SelectProfile' />
-      <Action name='RedoRework' nextState='SelectProfile'/>
-      <Action name='CancelRework' nextState='SelectProfile'> </Action>
+      <!-- This is the end state for this state machine -->
     </State>
 
   </StateMachine>
