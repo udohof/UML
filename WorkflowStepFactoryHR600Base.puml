@@ -1,0 +1,21 @@
+@startuml WorkflowStepFactoryHR600Base
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam classAttributeFontSize 11
+skinparam classMethodFontSize 11
+
+class WorkflowStepFactoryHR600Base {
+    +CreateFourCornerMatchWorkflowStepViewModel()
+    +CreateFourCornerPinDetectionWorkflowStepViewModel()
+    +CreateAdjustCrosshairForBigBGAWorkflowStepViewModel()
+}
+
+WorkflowStepFactoryHR600Base ..> FourCornerMatchWorkflowStepViewModel : creates
+WorkflowStepFactoryHR600Base ..> FourCornerPinDetectionWorkflowStepViewModel : creates
+WorkflowStepFactoryHR600Base ..> AdjustCrosshairForBigBGAWorkflowStepViewModel : creates
+
+FourCornerMatchWorkflowStepViewModel ..> FourCornerMatchWorkflowStepAdditionalViewModel : creates
+FourCornerPinDetectionWorkflowStepViewModel ..> FourCornerPinDetectionWorkflowStepAdditionalViewModel : creates
+AdjustCrosshairForBigBGAWorkflowStepViewModel ..> AdjustCrosshairForBigBGAWorkflowStepAdditionalViewModel : creates
+
+@enduml

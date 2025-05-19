@@ -1,0 +1,41 @@
+@startuml ReworkViewModelHR600
+activate ReworkViewModelHR600
+
+ReworkViewModelHR600-> ProfileSelectorViewModelHR600Base: create("HR600Base")
+activate ProfileSelectorViewModelHR600Base
+deactivate ProfileSelectorViewModelHR600Base
+
+ReworkViewModelHR600-> ProfileSelectorViewModelHR600Base: getName()
+activate ProfileSelectorViewModelHR600Base
+ReworkViewModelHR600<<-- ProfileSelectorViewModelHR600Base: getName(): "Hannes"
+deactivate ProfileSelectorViewModelHR600Base
+
+ReworkViewModelHR600-> ProfileSelectorViewModelHR600Base: getKontoNr()
+activate ProfileSelectorViewModelHR600Base
+ReworkViewModelHR600<<-- ProfileSelectorViewModelHR600Base: "123456"
+deactivate ProfileSelectorViewModelHR600Base
+
+WorkflowStepFactoryHR600Base-> FourCornerMatchWorkflowStepViewModel: new()
+activate WorkflowStepFactoryHR600Base
+FourCornerMatchWorkflowStepViewModel-> WorkflowStepFactoryHR600Base: new()
+
+
+WorkflowStepFactoryHR600Base-> FourCornerPinDetectionWorkflowStepViewModel: new()
+activate WorkflowStepFactoryHR600Base
+FourCornerPinDetectionWorkflowStepViewModel-> WorkflowStepFactoryHR600Base: new()
+
+
+
+WorkflowStepFactoryHR600Base-> AdjustCrosshairWorkflowStepViewModel: new()
+activate WorkflowStepFactoryHR600Base
+AdjustCrosshairWorkflowStepViewModel-> WorkflowStepFactoryHR600Base: new()
+deactivate WorkflowStepFactoryHR600Base
+
+deactivate ReworkViewModelHR600
+
+note right of ProfileSelectorViewModelHR600Base
+  End point of any workflow
+  Returns to SelectProfile
+end note
+
+@enduml
