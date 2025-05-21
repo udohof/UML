@@ -5,17 +5,24 @@ skinparam classAttributeFontSize 11
 skinparam classMethodFontSize 11
 
 class WorkflowStepFactoryHR600Base {
+    IBigBgaManager bigBgaManager,
     +CreateFourCornerMatchWorkflowStepViewModel()
     +CreateFourCornerPinDetectionWorkflowStepViewModel()
     +CreateAdjustCrosshairForBigBGAWorkflowStepViewModel()
 }
+note right
+Class WorkflowStepFactoryHR600Base will get BigBgaManagerContainer via Constructor Injection
+end note
 
 WorkflowStepFactoryHR600Base ..> FourCornerMatchWorkflowStepViewModel : creates
 WorkflowStepFactoryHR600Base ..> FourCornerPinDetectionWorkflowStepViewModel : creates
 WorkflowStepFactoryHR600Base ..> AdjustCrosshairForBigBGAWorkflowStepViewModel : creates
 
+
 FourCornerMatchWorkflowStepViewModel ..> FourCornerMatchWorkflowStepAdditionalViewModel : creates
 FourCornerPinDetectionWorkflowStepViewModel ..> FourCornerPinDetectionWorkflowStepAdditionalViewModel : creates
 AdjustCrosshairForBigBGAWorkflowStepViewModel ..> AdjustCrosshairForBigBGAWorkflowStepAdditionalViewModel : creates
+
+footer == End of WorkflowStepFactoryHR600Base Diagram ==
 
 @enduml

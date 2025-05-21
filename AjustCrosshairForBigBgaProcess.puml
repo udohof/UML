@@ -1,0 +1,89 @@
+@startuml AdjustCrosshairForBigBGAProcess
+scale 300 width
+skinparam padding 10
+skinparam nodesep 60
+!define DARKBLUE #0000A0
+!define DARKGREEN #008000
+!define DARKORANGE #FF8C00
+!define DARKRED #FF0000
+
+participant WorkflowManagerHR600Base
+participant AdjustCrosshairForBigBGAWorkflowStepAdditionalViewModel
+participant AdjustCrosshairForBigBGAWorkflowStepViewModel
+participant BigBGAManagerHR600Base
+participant ImageProcessingManagerHR600Base
+participant MotionControlManagerHR600Base
+
+WorkflowManagerHR600Base --> WorkflowManagerHR600Base : toAdjustCrosshairForBigBGA\n
+activate WorkflowManagerHR600Base
+WorkflowManagerHR600Base --> BigBGAManagerHR600Base : Init AdjustCrosshairForBigBGAStateMachine\n
+activate BigBGAManagerHR600Base
+AdjustCrosshairForBigBGAWorkflowStepAdditionalViewModel --> BigBGAManagerHR600Base : Next InnerState\n
+activate BigBGAManagerHR600Base
+  note right
+  Next action will trigger inner workflow which controls the loop
+  end note
+BigBGAManagerHR600Base --> AdjustCrosshairForBigBGAWorkflowStepAdditionalViewModel : Return Result\n
+deactivate BigBGAManagerHR600Base
+loop until all four corners done
+  AdjustCrosshairForBigBGAWorkflowStepViewModel --> BigBGAManagerHR600Base : Set Rectangle\n
+  activate BigBGAManagerHR600Base
+  BigBGAManagerHR600Base --> ImageProcessingManagerHR600Base : Excecute Algorithm Rectangle\n
+  activate ImageProcessingManagerHR600Base
+  ImageProcessingManagerHR600Base --> BigBGAManagerHR600Base : Return Result\n
+  deactivate ImageProcessingManagerHR600Base
+  BigBGAManagerHR600Base --> MotionControlManagerHR600Base : Move to Next Position\n
+  activate MotionControlManagerHR600Base
+  MotionControlManagerHR600Base --> BigBGAManagerHR600Base : Return Result\n
+  deactivate MotionControlManagerHR600Base
+  BigBGAManagerHR600Base --> AdjustCrosshairForBigBGAWorkflowStepAdditionalViewModel : Return Result\n
+end loop
+deactivate BigBGAManagerHR600Base
+AdjustCrosshairForBigBGAWorkflowStepAdditionalViewModel --> BigBGAManagerHR600Base : Previous InnerState\n
+activate BigBGAManagerHR600Base
+  note right
+  Previous action will trigger inner workflow which controls the loop
+  end note
+BigBGAManagerHR600Base --> AdjustCrosshairForBigBGAWorkflowStepAdditionalViewModel : Return Result\n
+deactivate BigBGAManagerHR600Base
+AdjustCrosshairForBigBGAWorkflowStepAdditionalViewModel --> BigBGAManagerHR600Base : Undo all\n
+activate BigBGAManagerHR600Base
+  note right
+  Undo all action will reset inner workflow which controls the loop
+  end note
+BigBGAManagerHR600Base --> AdjustCrosshairForBigBGAWorkflowStepAdditionalViewModel : Return Result\n
+deactivate BigBGAManagerHR600Base
+
+note right of MotionControlManagerHR600Base 
+  End point motion control
+end note
+
+note right of ImageProcessingManagerHR600Base 
+  End point image 
+  processing control
+end note
+
+note left of WorkflowManagerHR600Base 
+  End point of main workflow 
+  AdjustCrosshairForBigBGAProcess
+  Returns to next main Step
+end note
+
+note right of BigBGAManagerHR600Base 
+  Processing Base for 
+  BigBGA Workflow
+end note
+
+note right of AdjustCrosshairForBigBGAWorkflowStepAdditionalViewModel 
+  SideBar View
+  AdjustCrosshairForBigBGAProcess
+end note
+
+note right of AdjustCrosshairForBigBGAWorkflowStepViewModel 
+  Main View
+  AdjustCrosshairForBigBGAProcess
+end note
+
+footer == End of AdjustCrosshairForBigBGAProcess Diagram ==
+
+@enduml

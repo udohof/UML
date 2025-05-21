@@ -1,0 +1,68 @@
+@startuml ComponentManagerFactoryHR600Base
+skinparam classAttributeIconSize 0
+
+class ComponentManagerFactoryHR600Base {
+    +ComponentManagerFactoryHR600Base(IUnityContainer unityContainer)
+    +IComponentManager CreateComponentManager()
+    -void RegisterArchiveManagerInIoC()
+    -void RegisterErrorInfoManagerInIoC()
+    -void RegisterImageProcessingControlManagerInIoC()
+    -void RegisterImageProcessingStateInIoC()
+    -void RegisterManagerInIoC()
+    -void RegisterMotionControlManagerInIoC()
+    -void RegisterMotionControlStateInIoC()
+    -void RegisterAppSettingsInIoC()
+    -void RegisterOtherManagerInIoC()
+    -void RegisterSerializationServicesInIoC()
+    -void RegisterProfileManagerInIoC()
+    -void RegisterStatesInIoC()
+    -void RegisterSystemControlManagerInIoC()
+    -void RegisterSystemControlStateInIoC()
+}
+note right
+    ComponentManagerFactoryHR600Base is a factory class that creates instances of IComponentManager.
+    It is responsible for registering various managers and services in the IoC container.
+
+    For the BigBGA Feature there is the need to register the IBigBgaManager in the IoC container.
+    This is done in the RegisterOtherManagerInIoC method.
+
+        private void RegisterOtherManagerInIoC()
+        {
+            Container.RegisterType<IWorkflowManager, WorkflowManagerHR600Base>(new ContainerControlledLifetimeManager());
+            Container.RegisterType<IComponentManager, ComponentManagerHR600Base>(new ContainerControlledLifetimeManager());
+            Container.RegisterType<ISolderManager, SolderManagerHR600Base>(new ContainerControlledLifetimeManager());
+            Container.RegisterType<IUpdateManager, UpdateManagerHR600Base>(new ContainerControlledLifetimeManager());
+            <color:red>NextStep\nContainer.RegisterType<IBigBgaManager, IBigBgaManager>(new ContainerControlledLifetimeManager());<color:red>
+        }
+end note    
+
+class ComponentManagerFactory {
+    #IUnityContainer Container
+    +ComponentManagerFactory(IUnityContainer unityContainer)
+    +abstract IComponentManager CreateComponentManager()
+}
+
+interface IComponentManagerFactory {
+    +IComponentManager CreateComponentManager()
+}
+
+interface IComponentManager {
+    +bool IsInitialized
+    +Task<bool> InitializeAsync()
+}
+
+ComponentManagerFactoryHR600Base --|> ComponentManagerFactory
+ComponentManagerFactory ..|> IComponentManagerFactory
+ComponentManagerFactoryHR600Base ..> IComponentManager
+
+note bottom
+    This diagram illustrates the ComponentManagerFactory and its relationship with the IComponentManager interface.
+    The ComponentManagerFactoryHR600Base class is a concrete implementation of the factory pattern,
+    responsible for creating instances of IComponentManager and registering various managers in the IoC container.
+    The IComponentManager interface defines the contract for component managers, including an IsInitialized property
+    and an asynchronous InitializeAsync method.
+end note
+
+footer == End of ComponentManagerFactoryHR600Base Diagram ==
+
+@enduml

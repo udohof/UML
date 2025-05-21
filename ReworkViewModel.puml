@@ -1,7 +1,8 @@
 @startuml ReworkViewModelHR600
+ReworkViewModelHR600-> ReworkViewModelHR600: ShowProfileSelector
 activate ReworkViewModelHR600
 
-ReworkViewModelHR600-> ProfileSelectorViewModelHR600Base: create("HR600Base")
+ReworkViewModelHR600-> ProfileSelectorViewModelHR600Base: new ("HR600Base")
 activate ProfileSelectorViewModelHR600Base
 deactivate ProfileSelectorViewModelHR600Base
 

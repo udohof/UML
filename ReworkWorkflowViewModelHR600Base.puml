@@ -1,0 +1,32 @@
+@startuml ReworkWorkflowViewModelHR600Base
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam classAttributeFontSize 11
+skinparam classMethodFontSize 11
+
+class ReworkWorkflowViewModelHR600Base {
+    - WorkflowManagerHR600Base _workflowManagerHr600
+    - IWorkflowStepFactoryHR600Base _workflowStepFactory
+
+    + ReworkWorkflowViewModelHR600Base(
+        IWorkflowStepFactoryHR600Base workflowStepFactory,
+    )
+    + void InitializeWorkflowSteps()
+    + List<WorkflowGroupStep> InitializeAllWorkflowGroupSteps()
+}
+note right
+The ReworkWorkflowViewModelHR600Base will get the Container 
+WorkflowStepFactoryHR600Base which collected the needed ViewModel 
+and the BigBgaManager container objects.
+
+The initialization of the workflow steps is done in the
+InitializeWorkflowSteps method.
+end note
+
+ReworkWorkflowViewModelHR600Base --|> ReworkWorkflowViewModel : extends
+ReworkWorkflowViewModelHR600Base ..> IWorkflowState
+ReworkWorkflowViewModelHR600Base ..> WorkflowGroupStep
+
+footer == End of ReworkWorkflowViewModelHR600Base Diagram ==
+
+@enduml
