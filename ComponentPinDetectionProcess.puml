@@ -1,0 +1,103 @@
+@startuml ComponentPinDetectionProcess
+scale 300 width
+skinparam padding 10
+skinparam nodesep 60
+!define DARKBLUE #0000A0
+!define DARKGREEN #008000
+!define DARKORANGE #FF8C00
+!define DARKRED #FF0000
+
+participant WorkflowManagerHR600Base
+participant ComponentPinDetectionWorkflowStepAdditionalViewModel
+participant ComponentPinDetectionWorkflowStepViewModel
+participant BigBGAPlacementManagerHR600Base
+participant ImageProcessingManagerHR600Base
+participant MotionControlManagerHR600Base
+
+WorkflowManagerHR600Base --> WorkflowManagerHR600Base : toComponentPinDetection\n
+activate WorkflowManagerHR600Base
+WorkflowManagerHR600Base --> Pacement : Init ComponentPinDetectionInnerStateMachine\n
+activate Pacement
+ComponentPinDetectionWorkflowStepAdditionalViewModel --> Pacement : Next InnerState\n
+activate Pacement
+  note right
+  Next action will trigger inner workflow which controls the loop
+  end note
+Pacement --> ComponentPinDetectionWorkflowStepAdditionalViewModel : Return Result\n
+deactivate Pacement
+loop until uppr left anf upper right corners done
+  ComponentPinDetectionWorkflowStepViewModel --> Pacement : Set Rectangle\n
+  activate Pacement
+  Pacement --> ImageProcessingManagerHR600Base : Excecute Algorithm Rectangle\n
+  activate ImageProcessingManagerHR600Base
+  ImageProcessingManagerHR600Base --> Pacement : Return Result\n
+  deactivate ImageProcessingManagerHR600Base
+  Pacement --> MotionControlManagerHR600Base : Move to Next Position\n
+  activate MotionControlManagerHR600Base
+  MotionControlManagerHR600Base --> Pacement : Return Result\n
+  deactivate MotionControlManagerHR600Base
+  Pacement --> ComponentPinDetectionWorkflowStepAdditionalViewModel : Return Result\n
+  deactivate Pacement
+end loop
+loop until all four corners done
+  ComponentPinDetectionWorkflowStepViewModel --> Pacement : Set Rectangle\n
+  activate Pacement
+  Pacement --> ImageProcessingManagerHR600Base : Excecute Algorithm Rectangle\n
+  activate ImageProcessingManagerHR600Base
+  ImageProcessingManagerHR600Base --> Pacement : Return Result\n
+  deactivate ImageProcessingManagerHR600Base
+  Pacement --> MotionControlManagerHR600Base : Move to Next Position\n
+  activate MotionControlManagerHR600Base
+  MotionControlManagerHR600Base --> Pacement : Return Result\n
+  deactivate MotionControlManagerHR600Base
+  Pacement --> ComponentPinDetectionWorkflowStepAdditionalViewModel : Return Result\n
+  deactivate Pacement
+end loop
+ComponentPinDetectionWorkflowStepAdditionalViewModel --> Pacement : Previous InnerState\n
+activate Pacement
+  note right
+  Previous action will trigger inner workflow which controls the loop
+  end note
+Pacement --> ComponentPinDetectionWorkflowStepAdditionalViewModel : Return Result\n
+deactivate Pacement
+ComponentPinDetectionWorkflowStepAdditionalViewModel --> Pacement : Undo all\n
+activate Pacement
+  note right
+  Undo all action will reset inner workflow which controls the loop
+  end note
+Pacement --> ComponentPinDetectionWorkflowStepAdditionalViewModel : Return Result\n
+deactivate Pacement
+
+note right of MotionControlManagerHR600Base 
+  End point motion control
+end note
+
+note right of ImageProcessingManagerHR600Base 
+  End point image 
+  processing control
+end note
+
+note left of WorkflowManagerHR600Base 
+  End point of main workflow 
+  ComponentPinDetection
+  Returns to next main Step
+end note
+
+note right of Pacement 
+  Processing Base for 
+  BigGBA Workflow
+end note
+
+note right of ComponentPinDetectionWorkflowStepAdditionalViewModel 
+  SideBar View
+  ComponentPinDetectionProcess
+end note
+
+note right of ComponentPinDetectionWorkflowStepViewModel 
+  Main View
+  ComponentPinDetectionProcess
+end note
+
+footer == End of ComponentPinDetectionProcess Diagram ==
+
+@enduml

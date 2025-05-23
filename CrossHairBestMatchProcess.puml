@@ -1,0 +1,77 @@
+@startuml CrossHairBestMatchProcess
+scale 300 width
+skinparam padding 10
+skinparam nodesep 60
+!define DARKBLUE #0000A0
+!define DARKGREEN #008000
+!define DARKORANGE #FF8C00
+!define DARKRED #FF0000
+
+participant WorkflowManagerHR600Base
+participant CrossHairBestMatchWorkflowStepAdditionalViewModel
+participant CrossHairBestMatchWorkflowStepViewModel
+participant BigBGAPlacementManagerHR600Base
+participant ImageProcessingManagerHR600Base
+participant MotionControlManagerHR600Base
+
+WorkflowManagerHR600Base --> WorkflowManagerHR600Base : toCrossHairBestMatch\n
+activate WorkflowManagerHR600Base
+WorkflowManagerHR600Base --> Placement : Init CrossHairBestMatchStateMachine\n
+activate Placement
+Placement --> CrossHairBestMatchWorkflowStepAdditionalViewModel : Return Result\n
+loop until virtual Best Match is Ok
+  CrossHairBestMatchWorkflowStepAdditionalViewModel --> Placement : Virtual Correction\n
+  activate Placement
+  Placement --> MotionControlManagerHR600Base : Correction drive X,Y and Phi\n
+  activate MotionControlManagerHR600Base
+  MotionControlManagerHR600Base --> Placement : Return Result\n
+  deactivate MotionControlManagerHR600Base
+  Placement --> ImageProcessingManagerHR600Base : Excecute Algorithm FourCornerMatch\n
+  activate ImageProcessingManagerHR600Base
+  ImageProcessingManagerHR600Base --> Placement : Return Result\n
+  deactivate ImageProcessingManagerHR600Base
+  Placement --> CrossHairBestMatchWorkflowStepViewModel : Return Result\n
+  deactivate Placement
+end loop
+
+CrossHairBestMatchWorkflowStepAdditionalViewModel --> Placement : Undo all\n
+activate Placement
+  note right
+  Undo all action will reset to first found best match
+  end note
+Placement --> CrossHairBestMatchWorkflowStepAdditionalViewModel : Return Result\n
+deactivate Placement
+
+note right of MotionControlManagerHR600Base 
+  End point motion control
+end note
+
+note right of ImageProcessingManagerHR600Base 
+  End point image 
+  processing control
+end note
+
+note left of WorkflowManagerHR600Base 
+  End point of main workflow 
+  CrossHairBestMatchProcess
+  Returns to next main Step
+end note
+
+note right of Placement 
+  Processing Base for 
+  BigGBA Workflow
+end note
+
+note right of CrossHairBestMatchWorkflowStepAdditionalViewModel 
+  SideBar View
+  CrossHairBestMatchProcess
+end note
+
+note right of CrossHairBestMatchWorkflowStepViewModel 
+  Main View
+  CrossHairBestMatchProcess
+end note
+
+footer == End of CrossHairBestMatchProcess Diagram ==
+
+@enduml

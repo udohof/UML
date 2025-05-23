@@ -1,4 +1,4 @@
-@startuml
+@startuml BigBGAStateMachine
 !define DARKBLUE #0000A0
 !define DARKGREEN #008000
 !define DARKORANGE #FF8C00
@@ -33,7 +33,7 @@ SelectProfile --> Undefined : Logout
 SelectProfile --> AdjustPcb : NextStep\n[IsAlreadyReferenced\nProfileSelected\nExtendedHeatersActive]
 SelectProfile --> PrepareScavenging : NextStep\n[IsAlreadyReferenced\nScavengerIsActive\nScavengingSelected]
 SelectProfile --> AdjustCrosshair : NextStep\n[IsAlreadyReferenced\nIsDesolderSelected\nProfileSelected\nPcbFrameInLockPosition\n]
-SelectProfile --> AdjustCrosshairForBigBGA : <color:red>NextStep\n<color:red>[IsAlreadyReferenced\n<color:red>ProfileSelected\n<color:red>IsUserDefindedPlacmentFilterSelected]
+SelectProfile --> TargetPadsDetection : <color:red>NextStep\n<color:red>[IsAlreadyReferenced\n<color:red>ProfileSelected\n<color:red>IsUserDefindedPlacmentFilterSelected]
 SelectProfile --> PreparePickUpFromTray : NextStep\n[IsAlreadyReferenced\nIsBigComponentSelected\nIsPlacementSelected\nPcbFrameInLockPosition\nProfileSelected]
 SelectProfile --> ProvideComponent : NextStep\n[IsAlreadyReferenced\nIsCyclicWorkflowMode\nPcbFrameInLockPosition]
 SelectProfile --> PrepareProvideComponent : NextStep\n[IsAlreadyReferenced\nIsPlacementSelected\nProfileSelected\nPcbFrameInLockPosition]
@@ -52,25 +52,25 @@ AdjustPcb --> AdjustCrosshairForSolder : NextStep\n[IsSolderSelected]
 AdjustPcb --> InspectionAfterSolder : NextStep\n[IsInspectionAfterSolderSelected]
 AdjustPcb --> FinishRework : NextStep
 
-state "AdjustCrosshairForBigBGA" as AdjustCrosshairForBigBGA #red {
-  [*] --> AdjustCrosshairForBigBGAProcess
-  state "AdjustCrosshairForBigBGAProcess" as AdjustCrosshairForBigBGAProcess #red
-  AdjustCrosshairForBigBGAProcess : Adjust crosshair for Big BGA
+state "TargetPadsDetection" as TargetPadsDetection #red {
+  [*] --> TargetPadsDetectionProcess
+  state "TargetPadsDetectionProcess" as TargetPadsDetectionProcess #red
+  TargetPadsDetectionProcess : Adjust crosshair for Big BGA
 }
 
-state "FourCornerPinDetection" as FourCornerPinDetection #red {
-  [*] --> FourCornerPinDetectionProcess
-  state "FourCornerPinDetectionProcess" as FourCornerPinDetectionProcess #red
-  FourCornerPinDetectionProcess : Execute four corner pin detection for Big BGA
+state "ComponenetPinDetection" as ComponenetPinDetection #red {
+  [*] --> ComponenetPinDetectionProcess
+  state "ComponenetPinDetectionProcess" as ComponenetPinDetectionProcess #red
+  ComponenetPinDetectionProcess : Execute four corner pin detection for Big BGA
 }
 
-state "FindFourCornerMatch" as FindFourCornerMatch #red {
-  [*] --> FindFourCornerMatchProcess
-  state "FindFourCornerMatchProcess" as FindFourCornerMatchProcess #red
-  FindFourCornerMatchProcess : Execute four corner match for Big BGA
+state "CrossHairBestMatch" as CrossHairBestMatch #red {
+  [*] --> CrossHairBestMatchProcess
+  state "CrossHairBestMatchProcess" as CrossHairBestMatchProcess #red
+  CrossHairBestMatchProcess : Execute four corner match for Big BGA
 }
 
-AdjustCrosshairForBigBGA --> PreparePickUpFromTray : <color:red>NextStep\n<color:red>[InnerProcessFourPointMethodFinished]
+TargetPadsDetection --> PreparePickUpFromTray : <color:red>NextStep\n<color:red>[InnerProcessFourPointMethodFinished]
 
 AdjustCrosshair --> AdjustTeSensor : NextStep\n[AdjustDriveFinished]
 
@@ -111,10 +111,10 @@ PreparePickUpFromTray --> PickUpFromTray : NextStep\n[IsPreparePickUpFromTrayFin
 
 PickUpFromTray --> PinDetection : NextStep\n[IsPickUpFromTrayFinished\nIsBigComponentSelected]
 PickUpFromTray --> PrepareProvideComponent : NextStep\n[IsPickUpFromTrayFinished\nIsPlacementSelected\nIsBigComponentSelected]
-PickUpFromTray --> FourCornerPinDetection : <color:red>NextStep\n<color:red>[IsPickUpFromTrayFinished\n<color:red>IsPlacementSelected]
+PickUpFromTray --> ComponenetPinDetection : <color:red>NextStep\n<color:red>[IsPickUpFromTrayFinished\n<color:red>IsPlacementSelected]
 
-FourCornerPinDetection --> FindFourCornerMatch: <color:red>NextStep\n<color:red>[IsPickUpFromTrayFinished\n<color:red>IsPlacementSelected]
-FindFourCornerMatch --> PlaceComponent : <color:red>NextStep\n<color:red>[IsPinSelectionFromGlasplateFinished\n<color:red>IsPlacementSelected]
+ComponenetPinDetection --> CrossHairBestMatch: <color:red>NextStep\n<color:red>[IsPickUpFromTrayFinished\n<color:red>IsPlacementSelected]
+CrossHairBestMatch --> PlaceComponent : <color:red>NextStep\n<color:red>[IsPinSelectionFromGlasplateFinished\n<color:red>IsPlacementSelected]
 PinDetection --> FindBestMatch : NextStep\n[IsPinDetectionFinished\nIsDesolderSelected]
 PinDetection --> FindBestMatch : NextStep\n[IsCyclicWorkflowMode]
 PinDetection --> AdjustCrosshairAfterProvideComponent : NextStep\n[IsPinDetectionFinished]
