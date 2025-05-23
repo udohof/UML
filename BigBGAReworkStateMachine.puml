@@ -58,16 +58,16 @@ state "AdjustCrosshairForBigBGA" as AdjustCrosshairForBigBGA #red {
   AdjustCrosshairForBigBGAProcess : Adjust crosshair for Big BGA
 }
 
-state "FourCornerRotationCorrection" as FourCornerRotationCorrection #red {
-  [*] --> FourCornerRotationCorrectionProcess
-  state "FourCornerRotationCorrectionProcess" as FourCornerRotationCorrectionProcess #red
-  FourCornerRotationCorrectionProcess : Execute four corner rotation correction for Big BGA
-}
-
 state "FourCornerPinDetection" as FourCornerPinDetection #red {
   [*] --> FourCornerPinDetectionProcess
   state "FourCornerPinDetectionProcess" as FourCornerPinDetectionProcess #red
   FourCornerPinDetectionProcess : Execute four corner pin detection for Big BGA
+}
+
+state "FindFourCornerMatch" as FindFourCornerMatch #red {
+  [*] --> FindFourCornerMatchProcess
+  state "FindFourCornerMatchProcess" as FindFourCornerMatchProcess #red
+  FindFourCornerMatchProcess : Execute four corner match for Big BGA
 }
 
 AdjustCrosshairForBigBGA --> PreparePickUpFromTray : <color:red>NextStep\n<color:red>[InnerProcessFourPointMethodFinished]
@@ -111,11 +111,10 @@ PreparePickUpFromTray --> PickUpFromTray : NextStep\n[IsPreparePickUpFromTrayFin
 
 PickUpFromTray --> PinDetection : NextStep\n[IsPickUpFromTrayFinished\nIsBigComponentSelected]
 PickUpFromTray --> PrepareProvideComponent : NextStep\n[IsPickUpFromTrayFinished\nIsPlacementSelected\nIsBigComponentSelected]
-PickUpFromTray --> FourCornerRotationCorrection : <color:red>NextStep\n<color:red>[IsPickUpFromTrayFinished\n<color:red>IsPlacementSelected\n<color:red>IsUserDefindedPlacmentFilterSelected]
+PickUpFromTray --> FourCornerPinDetection : <color:red>NextStep\n<color:red>[IsPickUpFromTrayFinished\n<color:red>IsPlacementSelected]
 
-FourCornerRotationCorrection --> FourCornerPinDetection : <color:red>NextStep\n<color:red>[IsFourCornerRotationCorrectionFinished]
-FourCornerPinDetection --> PrepareProvideComponent: <color:red>NextStep\n<color:red>[IsPickUpFromTrayFinished\n<color:red>IsPlacementSelected\n<color:red>IsUserDefindedPlacmentFilterSelected]
-
+FourCornerPinDetection --> FindFourCornerMatch: <color:red>NextStep\n<color:red>[IsPickUpFromTrayFinished\n<color:red>IsPlacementSelected]
+FindFourCornerMatch --> PlaceComponent : <color:red>NextStep\n<color:red>[IsPinSelectionFromGlasplateFinished\n<color:red>IsPlacementSelected]
 PinDetection --> FindBestMatch : NextStep\n[IsPinDetectionFinished\nIsDesolderSelected]
 PinDetection --> FindBestMatch : NextStep\n[IsCyclicWorkflowMode]
 PinDetection --> AdjustCrosshairAfterProvideComponent : NextStep\n[IsPinDetectionFinished]
